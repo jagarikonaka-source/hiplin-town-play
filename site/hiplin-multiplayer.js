@@ -79,11 +79,38 @@
   function setupChat() {
     if (chatUI) return;
     const doc = global.document;
-    const panel = doc.createElement('section');
-    panel.style.cssText = 'position:fixed;left:12px;bottom:12px;z-index:20;width:min(340px,calc(100vw - 24px));padding:12px;box-sizing:border-box;background:#142825eF;color:#fff;border-radius:12px;font:14px system-ui,sans-serif';
-    panel.setAttribute('aria-label', 'ロビーチャット');
+    const root = doc.createElement('section'); root.setAttribute('aria-label', 'ロビーチャット');
+    root.style.cssText = 'position:fixed;inset:0;z-index:20;pointer-events:none;font:14px system-ui,sans-serif';
+    const style = doc.createElement('style');
+    style.textContent = `
+      #hiplin-chat-overlay[hidden], #hiplin-chat-launcher[hidden], #hiplin-chat-unread[hidden] { display:none!important; }
+      #hiplin-chat-launcher { position:fixed;left:50%;bottom:calc(8px + env(safe-area-inset-bottom));transform:translateX(-50%);width:44px;height:44px;padding:0;border:1px solid #91b9a8;border-radius:50%;background:#142825eF;color:#fff;cursor:pointer;pointer-events:auto;touch-action:manipulation;font:24px system-ui; }
+      #hiplin-chat-unread { position:absolute;right:0;top:0;width:10px;height:10px;border-radius:50%;background:#ffe398;border:2px solid #142825; }
+      #hiplin-chat-overlay { position:fixed;inset:0;box-sizing:border-box;padding:16px max(16px,env(safe-area-inset-right)) 16px max(16px,env(safe-area-inset-left));display:grid;place-items:center;background:#07140f88;pointer-events:auto; }
+      #hiplin-chat-panel { width:min(380px,100%);max-height:100%;overflow:auto;box-sizing:border-box;padding:16px;border:1px solid #7eaa98;border-radius:14px;background:#142825;color:#fff;box-shadow:0 12px 48px #0006; }
+      #hiplin-chat-panel button { min-height:44px;cursor:pointer;touch-action:manipulation; }
+      #hiplin-chat-panel input { box-sizing:border-box;width:100%; }
+      #hiplin-chat-launcher:focus-visible, #hiplin-chat-panel :focus-visible { outline:3px solid #ffe398;outline-offset:2px; }
+    `;
+    doc.head.append(style);
+    const launcher = doc.createElement('button'); launcher.id = 'hiplin-chat-launcher'; launcher.type = 'button';
+    launcher.textContent = '💬'; launcher.title = 'チャットを開く'; launcher.setAttribute('aria-label', 'チャットを開く');
+    launcher.setAttribute('aria-expanded', 'false'); launcher.setAttribute('aria-controls', 'hiplin-chat-panel');
+    const unread = doc.createElement('span'); unread.id = 'hiplin-chat-unread'; unread.hidden = true; unread.setAttribute('aria-hidden', 'true'); launcher.append(unread);
+    const overlay = doc.createElement('div'); overlay.id = 'hiplin-chat-overlay'; overlay.hidden = true;
+    const panel = doc.createElement('div'); panel.id = 'hiplin-chat-panel'; panel.setAttribute('role', 'dialog');
+    panel.setAttribute('aria-modal', 'true'); panel.setAttribute('aria-labelledby', 'hiplin-chat-heading');
     const heading = doc.createElement('strong'); heading.textContent = '名前を入力して入室';
+    heading.id = 'hiplin-chat-heading';
+    heading.style.cssText = 'min-width:0;overflow-wrap:anywhere';
+    const header = doc.createElement('div'); header.style.cssText = 'display:flex;gap:8px;align-items:center;justify-content:space-between;position:sticky;top:-16px;background:#142825;z-index:1';
+    const close = doc.createElement('button'); close.type = 'button'; close.textContent = '閉じる'; close.setAttribute('aria-label', 'チャットを閉じる');
+    close.style.cssText = 'flex-shrink:0;padding:4px 8px;border:0;border-radius:6px;background:#28473e;color:#fff';
+    header.append(heading, close);
     const note = doc.createElement('p'); note.textContent = '同じロビーの人に名前とメッセージが表示されます。名前は20文字まで。';
+    const status = doc.createElement('div'); status.id = 'hiplin-online';
+    status.setAttribute('role', 'status'); status.setAttribute('aria-live', 'polite');
+    status.style.cssText = 'font-size:12px;margin:8px 0;color:#dfebe8;overflow-wrap:anywhere';
     const log = doc.createElement('div'); log.setAttribute('role', 'log'); log.setAttribute('aria-live', 'polite');
     log.style.cssText = 'max-height:160px;overflow:auto;overflow-wrap:anywhere;white-space:pre-wrap;margin:8px 0';
     const form = doc.createElement('form'); form.style.cssText = 'display:flex;gap:6px';
@@ -91,59 +118,82 @@
     input.style.cssText = 'min-width:0;flex:1;padding:9px;border:1px solid #7eaa98;border-radius:6px;font:16px system-ui';
     const button = doc.createElement('button'); button.type = 'submit'; button.textContent = '入室';
     button.style.cssText = 'padding:8px;border:0;border-radius:6px;background:#a9dfc1;color:#142825';
-    form.append(input, button); panel.append(heading, note, log, form); doc.body.append(panel);
-    const toggle = doc.createElement('button'); toggle.type = 'button'; toggle.textContent = '閉じる';
-    toggle.style.cssText = 'float:right;border:0;background:transparent;color:#b9e9d3;cursor:pointer';
-    toggle.setAttribute('aria-label', 'チャットを折りたたむ'); panel.insertBefore(toggle, heading);
-    let collapsed = false;
-    function expand() { collapsed = false; note.hidden = log.hidden = form.hidden = false; form.style.display = 'flex'; toggle.textContent = '閉じる'; }
-    toggle.addEventListener('click', () => {
-      if (collapsed) { expand(); return; }
-      input.blur(); collapsed = true; note.hidden = log.hidden = form.hidden = true; form.style.display = 'none'; toggle.textContent = '開く';
-    });
+    form.append(input, button); panel.append(header, note, status, log, form); overlay.append(panel); root.append(launcher, overlay); doc.body.append(root);
+    let expanded = false;
+    const blocked = () => doc.documentElement.hasAttribute('data-hiplin-sphere-clean-view') || doc.documentElement.hasAttribute('data-hiplin-arcade');
     const focus = value => { if (callback) callback(JSON.stringify({ type: 'chat-focus', focused: value })); };
-    input.addEventListener('focus', () => focus(true));
-    input.addEventListener('blur', () => focus(false));
-    panel.addEventListener('keydown', event => event.stopPropagation());
-    panel.addEventListener('keyup', event => event.stopPropagation());
+    function expand() {
+      if (blocked() || expanded) return;
+      expanded = true; overlay.hidden = false; launcher.hidden = true; unread.hidden = true;
+      launcher.setAttribute('aria-expanded', 'true'); launcher.setAttribute('aria-label', 'チャットを開く');
+      focus(true); input.focus(); log.scrollTop = log.scrollHeight;
+    }
+    function collapse() {
+      if (!expanded) return;
+      expanded = false; input.blur(); overlay.hidden = true; launcher.hidden = false;
+      launcher.setAttribute('aria-expanded', 'false'); focus(false); doc.getElementById('unity-canvas')?.focus();
+    }
+    launcher.addEventListener('click', expand); close.addEventListener('click', collapse);
+    overlay.addEventListener('click', event => { if (event.target === overlay) collapse(); });
+    // Pause Unity for the whole dialog, not just while the input has focus.
+    // Buttons and the modal backdrop must not leak keys/touches to game controls.
+    for (const type of ['keydown', 'keyup', 'pointerdown', 'pointerup', 'touchstart', 'touchend', 'click']) root.addEventListener(type, event => event.stopPropagation());
+    overlay.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && !event.isComposing) { event.preventDefault(); collapse(); }
+      if (event.key === 'Tab') {
+        if (event.shiftKey && doc.activeElement === close) { event.preventDefault(); button.focus(); }
+        else if (!event.shiftKey && doc.activeElement === button) { event.preventDefault(); close.focus(); }
+      }
+    });
+    new MutationObserver(() => { if (blocked()) collapse(); }).observe(doc.documentElement, { attributes: true, attributeFilter: ['data-hiplin-sphere-clean-view', 'data-hiplin-arcade'] });
+    // iPhone's keyboard changes the visual viewport without resizing the game canvas.
+    function fitViewport() {
+      const viewport = global.visualViewport;
+      if (viewport) {
+        overlay.style.top = viewport.offsetTop + 'px'; overlay.style.height = viewport.height + 'px'; overlay.style.bottom = 'auto';
+        if (expanded && doc.activeElement === input) input.scrollIntoView({ block: 'nearest' });
+      }
+    }
+    global.visualViewport?.addEventListener('resize', fitViewport);
+    global.visualViewport?.addEventListener('scroll', fitViewport); fitViewport();
     const line = text => { const row = doc.createElement('div'); row.textContent = text; log.append(row); while (log.children.length > 100) log.firstChild.remove(); log.scrollTop = log.scrollHeight; };
     input.addEventListener('keydown', event => {
-      if (event.key === 'Escape') { event.preventDefault(); input.blur(); doc.getElementById('unity-canvas')?.focus(); }
       if (event.isComposing && event.key === 'Enter') event.preventDefault();
     });
     doc.addEventListener('keydown', event => {
-      if (doc.documentElement.hasAttribute('data-hiplin-sphere-clean-view') || doc.documentElement.hasAttribute('data-hiplin-arcade')) return;
-      if (event.key === 'Enter' && doc.activeElement !== input && !event.isComposing) { event.preventDefault(); event.stopImmediatePropagation(); expand(); input.focus(); }
+      if (blocked() || expanded) return;
+      if (event.key === 'Enter' && !event.isComposing && !event.repeat && !event.ctrlKey && !event.metaKey && !event.altKey &&
+          (doc.activeElement === doc.body || doc.activeElement === doc.getElementById('unity-canvas'))) {
+        event.preventDefault(); event.stopImmediatePropagation(); expand();
+      }
     }, true);
     form.addEventListener('submit', event => {
       event.preventDefault(); const text = input.value.trim();
       if (!displayName) {
         if (!text || [...text].length > 20 || /[\u0000-\u001f\u007f-\u009f\u202a-\u202e\u2066-\u2069]/.test(text)) { note.textContent = '名前は1〜20文字で入力してください。'; return; }
         displayName = text; heading.textContent = 'ロビーチャット · ' + displayName;
-        note.textContent = 'Enterで入力・送信 / Escで戻る · 履歴はこの画面を閉じるまで';
+        note.textContent = 'Enterで入力・送信 / Escで閉じる · 履歴はページを閉じるまで';
         input.value = ''; input.maxLength = 400; input.placeholder = 'メッセージ（200文字まで）'; input.setAttribute('aria-label', 'メッセージ'); button.textContent = '送信';
-        global.HiplinMultiplayer.start(callback); input.blur();
+        global.HiplinMultiplayer.start(callback); collapse();
       } else {
         if (!text || [...text].length > 200) { line('200文字以内で入力してください。'); return; }
         if (!client?.chat(text)) { line('接続待ちです。オンラインになってから送信してください。'); return; }
-        input.value = '';
+        input.value = ''; input.focus();
       }
     });
     chatUI = { receive(data) {
-      if (data.type === 'chat') line(data.name + '：' + data.text);
+      if (data.type === 'chat') {
+        line(data.name + '：' + data.text);
+        if (!expanded) { unread.hidden = false; launcher.setAttribute('aria-label', 'チャットを開く（新着メッセージあり）'); }
+      }
       if (data.type === 'chat-error') line(data.reason === 'rate-limit' ? '少し待ってから送信してください（10秒に5件まで）。' : 'メッセージを送信できませんでした。');
     } };
   }
   function showStatus(state, count) {
-    let badge = global.document.getElementById('hiplin-online');
-    if (!badge) {
-      badge = global.document.createElement('div'); badge.id = 'hiplin-online';
-      badge.setAttribute('role', 'status'); badge.setAttribute('aria-live', 'polite');
-      badge.style.cssText = 'position:fixed;right:max(14px,env(safe-area-inset-right));top:max(14px,env(safe-area-inset-top));z-index:5;padding:8px 12px;border-radius:18px;background:#15272cdd;color:#dfebe8;font:12px system-ui,sans-serif;pointer-events:none;';
-      global.document.body.appendChild(badge);
-    }
+    const badge = global.document.getElementById('hiplin-online');
+    if (!badge) return;
     const labels = { online: '● オンライン · ' + count + '人', connecting: '○ みんなの街に接続中', offline: '○ ひとりで散策中 · 再接続しています', full: '○ 満員です · 空きを待っています', unconfigured: '○ ひとりで散策中 · 通信設定を確認してください' };
-    const text = state === 'unjoined' ? '○ 名前を入力して入室してください' : labels[state] || labels.offline;
+    const text = state === 'unjoined' ? '○ 未入室 · ひとりで散策できます' : labels[state] || labels.offline;
     if (badge.textContent !== text) badge.textContent = text;
     badge.style.color = state === 'online' ? '#9be3c5' : '#dfebe8';
   }
