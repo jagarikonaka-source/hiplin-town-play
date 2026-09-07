@@ -1,0 +1,33 @@
+name: Publish HIPLIN TOWN
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Restore movie and verify build
+        run: |
+          cat deploy-media/YumeNoTochu.mp4.part-* > site/StreamingAssets/Sphere/YumeNoTochu.mp4
+          echo '3b886b052ac21f2950e1f083d9e6e0c28b82e6aeb61341169a7e70f44c417324  site/StreamingAssets/Sphere/YumeNoTochu.mp4' | sha256sum -c -
+          test -f site/index.html
+          touch site/.nojekyll
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
