@@ -84,7 +84,8 @@
     const style = doc.createElement('style');
     style.textContent = `
       #hiplin-chat-overlay[hidden], #hiplin-chat-launcher[hidden], #hiplin-chat-unread[hidden] { display:none!important; }
-      #hiplin-chat-launcher { position:fixed;left:50%;bottom:calc(8px + env(safe-area-inset-bottom));transform:translateX(-50%);width:44px;height:44px;padding:0;border:1px solid #91b9a8;border-radius:50%;background:#142825eF;color:#fff;cursor:pointer;pointer-events:auto;touch-action:manipulation;font:24px system-ui; }
+      [aria-label="ロビーチャット"][hidden] { display:none!important; }
+      #hiplin-chat-launcher { position:fixed;right:calc(12px + env(safe-area-inset-right));top:calc(12px + env(safe-area-inset-top));width:44px;height:44px;padding:0;border:1px solid #91b9a880;border-radius:50%;background:#14282580;color:#fff;cursor:pointer;pointer-events:auto;touch-action:manipulation;font:24px system-ui; }
       #hiplin-chat-unread { position:absolute;right:0;top:0;width:10px;height:10px;border-radius:50%;background:#ffe398;border:2px solid #142825; }
       #hiplin-chat-overlay { position:fixed;inset:0;box-sizing:border-box;padding:16px max(16px,env(safe-area-inset-right)) 16px max(16px,env(safe-area-inset-left));display:grid;place-items:center;background:#07140f88;pointer-events:auto; }
       #hiplin-chat-panel { width:min(380px,100%);max-height:100%;overflow:auto;box-sizing:border-box;padding:16px;border:1px solid #7eaa98;border-radius:14px;background:#142825;color:#fff;box-shadow:0 12px 48px #0006; }
@@ -119,8 +120,9 @@
     const button = doc.createElement('button'); button.type = 'submit'; button.textContent = '入室';
     button.style.cssText = 'padding:8px;border:0;border-radius:6px;background:#a9dfc1;color:#142825';
     form.append(input, button); panel.append(header, note, status, log, form); overlay.append(panel); root.append(launcher, overlay); doc.body.append(root);
-    let expanded = false;
-    const blocked = () => doc.documentElement.hasAttribute('data-hiplin-sphere-clean-view') || doc.documentElement.hasAttribute('data-hiplin-arcade');
+    let expanded = false, outdoors = false;
+    root.hidden = true;
+    const blocked = () => !outdoors || doc.documentElement.hasAttribute('data-hiplin-sphere-clean-view') || doc.documentElement.hasAttribute('data-hiplin-arcade');
     const focus = value => { if (callback) callback(JSON.stringify({ type: 'chat-focus', focused: value })); };
     function expand() {
       if (blocked() || expanded) return;
@@ -181,7 +183,11 @@
         input.value = ''; input.focus();
       }
     });
-    chatUI = { receive(data) {
+    chatUI = { setOutdoor(value) {
+      outdoors = value === true;
+      if (!outdoors) collapse();
+      root.hidden = !outdoors;
+    }, receive(data) {
       if (data.type === 'chat') {
         line(data.name + '：' + data.text);
         if (!expanded) { unread.hidden = false; launcher.setAttribute('aria-label', 'チャットを開く（新着メッセージあり）'); }
@@ -220,7 +226,11 @@
         }
       }
     },
-    update(json) { pending = json; if (client) client.update(json); },
+    update(json) {
+      pending = json;
+      try { chatUI?.setOutdoor(JSON.parse(json).isOutdoors); } catch (_) { chatUI?.setOutdoor(false); }
+      if (client) client.update(json);
+    },
     stop() { generation++; clearTimeout(configRetry); if (client) client.stop(); client = null; pending = null; }
   };
   if (global.addEventListener) {
