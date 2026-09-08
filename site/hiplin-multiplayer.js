@@ -85,8 +85,8 @@
     style.textContent = `
       #hiplin-chat-overlay[hidden], #hiplin-chat-launcher[hidden], #hiplin-chat-unread[hidden] { display:none!important; }
       [aria-label="ロビーチャット"][hidden] { display:none!important; }
-      #hiplin-chat-launcher { position:fixed;right:calc(12px + env(safe-area-inset-right));top:calc(12px + env(safe-area-inset-top));width:44px;height:44px;padding:0;border:1px solid #91b9a880;border-radius:50%;background:#14282580;color:#fff;cursor:pointer;pointer-events:auto;touch-action:manipulation;font:24px system-ui; }
-      #hiplin-chat-unread { position:absolute;right:0;top:0;width:10px;height:10px;border-radius:50%;background:#ffe398;border:2px solid #142825; }
+      #hiplin-chat-launcher { position:fixed;right:calc(12px + env(safe-area-inset-right));top:calc(12px + env(safe-area-inset-top));width:44px;height:44px;padding:4px;border:4px solid transparent;box-sizing:border-box;border-radius:50%;background:radial-gradient(circle,#142825a8 0 17px,#91b9a880 17px 18px,transparent 18px);color:#fff;cursor:pointer;pointer-events:auto;touch-action:manipulation;font:20px system-ui;line-height:26px; }
+      #hiplin-chat-unread { position:absolute;right:0;top:0;width:7px;height:7px;border-radius:50%;background:#ffe398;border:2px solid #142825; }
       #hiplin-chat-overlay { position:fixed;inset:0;box-sizing:border-box;padding:16px max(16px,env(safe-area-inset-right)) 16px max(16px,env(safe-area-inset-left));display:grid;place-items:center;background:#07140f88;pointer-events:auto; }
       #hiplin-chat-panel { width:min(380px,100%);max-height:100%;overflow:auto;box-sizing:border-box;padding:16px;border:1px solid #7eaa98;border-radius:14px;background:#142825;color:#fff;box-shadow:0 12px 48px #0006; }
       #hiplin-chat-panel button { min-height:44px;cursor:pointer;touch-action:manipulation; }
