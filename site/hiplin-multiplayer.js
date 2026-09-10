@@ -32,10 +32,14 @@
         if (socket !== current || stopped) return;
         let data;
         try { data = JSON.parse(event.data); } catch { return; }
+        if (!data || typeof data !== 'object' || typeof data.type !== 'string') return;
+        if ((data.type === 'welcome' || data.type === 'snapshot') && !Array.isArray(data.players)) return;
+        if ((data.type === 'joined' || data.type === 'appearance') && (!data.player || typeof data.player.id !== 'string')) return;
+        if (data.type === 'welcome' && typeof data.id !== 'string') return;
         lastReceived = Date.now();
         if (data.type === 'welcome') {
           joined = true; attempt = 0; peers.clear();
-          for (const player of data.players) peers.add(player.id);
+          for (const player of data.players) if (player && typeof player.id === 'string' && player.id !== data.id) peers.add(player.id);
         } else if (data.type === 'joined') peers.add(data.player.id);
         else if (data.type === 'left') peers.delete(data.id);
         else if (data.type === 'error') { status(data.reason === 'room-full' ? 'full' : 'offline', 0); }
