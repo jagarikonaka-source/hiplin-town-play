@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="TemplateData/style.css">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="HIPLIN TOWN">
-    <script src="hiplin-multiplayer.js?v=20260910091222"></script>
-    <script src="hiplin-display.js?v=20260910091222"></script>
+    <script src="hiplin-multiplayer.js?v=20260910111959"></script>
+    <script src="hiplin-display.js?v=20260910111959"></script>
     <style>
       html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #182024; }
       #unity-container.unity-desktop { position: fixed; inset: 0; left: 0; top: 0; transform: none; }
@@ -17,8 +17,44 @@
       #unity-canvas { touch-action: none; overscroll-behavior: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
       #unity-footer { display: none; }
 </style>
-  </head>
+  <link rel="stylesheet" href="hiplin-loading.css?v=20260910-cardboard04">
+<script src="hiplin-loading.js?v=20260910-cardboard04"></script>
+</head>
   <body>
+<section id="hiplin-loading" aria-labelledby="hiplin-loading-title">
+  <svg class="hiplin-paper-grain" aria-hidden="true" width="100%" height="100%">
+    <filter id="hiplin-paper-fibers"><feTurbulence type="fractalNoise" baseFrequency=".7" numOctaves="3" seed="8" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter>
+    <rect width="100%" height="100%" filter="url(#hiplin-paper-fibers)"/>
+  </svg>
+  <header class="hiplin-loading-heading">
+    <p class="hiplin-loading-eyebrow">音楽と、のんびり暮らす街。</p>
+    <h1 id="hiplin-loading-title">HIPLIN <span>TOWN</span></h1>
+  </header>
+  <div class="hiplin-loading-content">
+    <div id="hiplin-loading-progress" role="progressbar" aria-label="街の読み込み" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+      <div class="hiplin-walkway">
+        <div id="hiplin-walker">
+          <svg class="hiplin-sprite" viewBox="0 0 627 627" role="img" aria-label="ゲームと同じ服装のヒップリンが歩いています">
+            <defs>
+              <!-- Key only the green backdrop; keep dark hair/jacket and the white shirt opaque. -->
+              <filter id="hiplin-cardboard-key" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+                <feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  -1 1 -1 0 0"/>
+                <feComponentTransfer result="cutout"><feFuncA type="table" tableValues="1 0 0 0 0 0 0 0 0"/></feComponentTransfer>
+                <feComposite in="SourceGraphic" in2="cutout" operator="in"/>
+              </filter>
+            </defs>
+            <g class="hiplin-sprite-sheet"><image width="1254" height="1254" href="hiplin-walk-cardboard-v04.png" filter="url(#hiplin-cardboard-key)"/></g>
+          </svg>
+        </div>
+      </div>
+      <div class="hiplin-track"><div id="hiplin-loading-fill"></div></div>
+      <div class="hiplin-loading-caption"><span id="hiplin-loading-status" role="status">街を準備しています…</span><span id="hiplin-loading-percent" aria-hidden="true">0%</span></div>
+    </div>
+    <button id="hiplin-loading-retry" type="button" hidden>もう一度読み込む</button>
+    <p class="hiplin-loading-note">NOW LOADING <span>読み込みが終わると、自動で街へ入ります。</span></p>
+  </div>
+</section>
+
     <div id="unity-container" class="unity-desktop">
       <div id="unity-fullscreen-container">
         <canvas id="unity-canvas" width="960" height="600" tabindex="-1"></canvas>
@@ -68,12 +104,12 @@
       }
 
       var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/HiplinTownWebGL.loader.js?v=20260910091222";
+      var loaderUrl = buildUrl + "/HiplinTownWebGL.loader.js?v=20260910111959";
       var config = {
         arguments: [],
-        dataUrl: buildUrl + "/HiplinTownWebGL.data.unityweb?v=20260910091222",
-        frameworkUrl: buildUrl + "/HiplinTownWebGL.framework.js.unityweb?v=20260910091222",
-        codeUrl: buildUrl + "/HiplinTownWebGL.wasm.unityweb?v=20260910091222",
+        dataUrl: buildUrl + "/HiplinTownWebGL.data.unityweb?v=20260910111959",
+        frameworkUrl: buildUrl + "/HiplinTownWebGL.framework.js.unityweb?v=20260910111959",
+        codeUrl: buildUrl + "/HiplinTownWebGL.wasm.unityweb?v=20260910111959",
         streamingAssetsUrl: "StreamingAssets",
 
         // If you have a custom web site structure, or want to place multiple Unity build instances on the same page,
@@ -135,11 +171,13 @@
 
       var script = document.createElement("script");
       script.src = loaderUrl;
+      script.onerror = () => window.HiplinLoading.fail();
       script.onload = () => {
         const loadingContainer = document.querySelector("#unity-loading-container");
         const progressBarFull = document.querySelector("#unity-progress-bar-full");
 
         createUnityInstance(canvas, config, (progress) => {
+          window.HiplinLoading.progress(progress);
           if (progress < 1) {
             loadingContainer.style.display = "block";
             progressBarFull.style.width = 100 * progress + "%";
@@ -147,12 +185,14 @@
             loadingContainer.style.display = "none";
           }
         }).then((unityInstance) => {
+                window.HiplinLoading.ready();
                 window.HiplinDisplay.ready();
                 document.querySelector("#unity-fullscreen-button").onclick = () => {
                   unityInstance.SetFullscreen(1);
                 };
 
               }).catch((message) => {
+                window.HiplinLoading.fail();
                 alert(message);
               });
             };
