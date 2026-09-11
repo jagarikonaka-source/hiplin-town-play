@@ -69,6 +69,7 @@
               <label><input type="radio" name="diagnostic" value="source"><span>元画像・非圧縮</span></label>
               <label><input type="radio" name="diagnostic" value="normal-off"><span>凹凸なし</span></label>
               <label><input type="radio" name="diagnostic" value="raking"><span>斜め照明</span></label>
+              <label><input type="radio" name="diagnostic" value="low"><span>低画素</span></label>
             </fieldset>
             <div class="diagnostic-description"><h3 id="diagnostic-label">現行設定</h3><p id="diagnostic-description">比較の基準になる画像です。ほかの条件と切り替えて、同じ場所の紙目や反射を見てください。</p></div>
             <div id="diagnostic-frame" class="diagnostic-frame is-loading" aria-busy="true"><img id="diagnostic-image" width="1440" height="900" alt="カフェ：現行設定の補助診断画像" draggable="false"></div>
@@ -89,7 +90,7 @@
         <div><p class="eyebrow small">03 / READING NOTES</p><h2 id="reading-title">比較するときのポイント</h2></div>
         <div class="notes-grid">
           <article><span class="note-number">A</span><h3>素材と元画像</h3><p>カフェ8材質とHiplin4材質、計12材質が供給素材を参照し、以前の上書きが無効であることを確認しています。Normal・SpecGlossの元画像も参照されています。「元画像・非圧縮」で、画像の縮小・圧縮による違いを見比べます。</p></article>
-          <article><span class="note-number">B</span><h3>紙目と描画画素</h3><p>WebGLはDPR 1で描画し、画質設定のrenderScaleは高1・中0.75・低0.5です。高DPI端末の物理画素すべては使いません。低画素の実画像比較は今回は含めていません。</p></article>
+          <article><span class="note-number">B</span><h3>紙目と描画画素</h3><p>WebGLはDPR 1で描画し、画質設定のrenderScaleは高1・中0.75・低0.5です。高DPI端末の物理画素すべては使いません。今回の「低画素」は、通常の縦横半分の720×450を描画先に指定した比較です。</p></article>
           <article><span class="note-number">C</span><h3>光と実際の形状</h3><p>厚みを持つ形状は元からあります。「凹凸なし」と「斜め照明」で、細かな陰影と光の向きを切り分けます。材質の設定だけで紙らしさが完全に解決するとは限らないため、輪郭や折り目の見え方も確認します。</p></article>
         </div>
       </section>
@@ -98,8 +99,9 @@
         <h2 id="capture-title">この比較画像について</h2>
         <dl>
           <div><dt>撮影方法</dt><dd>Unity Editorで、現行ゲームのCamera.mainを使い、通常の三人称距離で撮影した画像です。ブラウザやiPhone実機の映像ではありません。</dd></div>
-          <div><dt>比較の基準</dt><dd>公開版a9ab471相当のDXT材質を使った、確認済みの10枚です。</dd></div>
+          <div><dt>比較の基準</dt><dd>公開版a9ab471相当のDXT材質を使った12枚です。変更前後の比較と、5つの補助診断条件を切り替えて確認できます。</dd></div>
           <div><dt>基本条件</dt><dd>Mobile_RPAsset、FOV 60°、距離9.5m、1440×900、昼・晴れ。メニュー・操作HUDを除いて撮影しています。DXTのWebGL圧縮設定を使ったEditor上の参考画像です。</dd></div>
+          <div><dt>低画素の条件</dt><dd>低画素の2枚は、撮影先を720×450に固定して描画・保存したPNGです。通常の縦横半分の画像を、同じ8:5の枠に拡大して表示します。カメラの位置・距離・FOVは通常画像と同じです。</dd></div>
           <div><dt>カメラの角度</dt><dd>カフェはピッチ5°、Hiplinはピッチ18°です。同じ対象の比較中は位置・距離・角度を固定しています。</dd></div>
           <div><dt>元の反射</dt><dd>SpecGloss元画像のSmoothness中央値は、壁が0.176、服が0.212です。元から反射が低い素材のため、倍率を半分にする試験でも見た目の差は小さくなります。</dd></div>
           <div><dt>元画像比較</dt><dd>「元画像・非圧縮」は対象の元2K画像を非圧縮で参照して再描画する診断です。元画像の縮小・圧縮による影響と、描画画素数の影響を分けて見ます。</dd></div>

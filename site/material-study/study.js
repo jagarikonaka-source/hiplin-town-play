@@ -6,7 +6,8 @@
     current: { label: '現行設定', description: '比較の基準になる画像です。ほかの条件と切り替えて、同じ場所の紙目や反射を見てください。' },
     source: { label: '元画像・非圧縮', description: '対象の元2K画像を非圧縮で参照して再描画したものです。通常の描画画素数を保ち、画像の縮小・圧縮による見え方の変化を切り分けます。' },
     'normal-off': { label: 'Normalによる凹凸なし', description: 'Normal Mapを一時的に無効にした画像です。実際の形状による陰影と、表面の細かな陰影の違いを見分けます。' },
-    raking: { label: '斜めからの照明', description: '光の向きを変えた診断画像です。紙目の見え方や反射が、照明の当たり方に左右されるかを確認します。' }
+    raking: { label: '斜めからの照明', description: '光の向きを変えた診断画像です。紙目の見え方や反射が、照明の当たり方に左右されるかを確認します。' },
+    low: { label: '低画素での描画', description: '通常の縦横半分、720×450を描画先に指定して保存したPNGです。同じ8:5の枠に拡大して、紙目や細かな凹凸の見え方を比較します。元画像の解像度や圧縮とは別の条件です。' }
   };
   const tabs = [...document.querySelectorAll('[data-subject]')];
   const range = $('comparison-slider'), stage = $('comparison-stage');
