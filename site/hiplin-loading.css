@@ -1,6 +1,12 @@
-#hiplin-loading { position:fixed;inset:0;z-index:30;overflow-x:hidden;overflow-y:auto;isolation:isolate;background:#cfb184;background-image:linear-gradient(90deg,transparent 19.8%,#79562c12 20%,#ffe8bd24 20.2%,transparent 20.5%),linear-gradient(0deg,transparent 75%,#79562c14 75.2%,#ffe8bd28 75.4%,transparent 75.7%),radial-gradient(ellipse at 45% 35%,#ead0a6aa,transparent 80%);color:#513d29;font-family:system-ui,-apple-system,sans-serif; }
+/* The browser's exposed page/safe-area and fullscreen backdrops stay black.
+   Safari also extends fixed-element backgrounds into its top and bottom bars. */
+html, body, #unity-container, #unity-fullscreen-container, #unity-canvas { background: #000; }
+html::backdrop, #unity-fullscreen-container::backdrop, #unity-canvas::backdrop { background: #000; }
+#hiplin-loading { position:fixed;inset:0;z-index:30;overflow-x:hidden;overflow-y:auto;isolation:isolate;background: #000;color:#513d29;font-family:system-ui,-apple-system,sans-serif; }
 #hiplin-loading[hidden], #hiplin-loading-retry[hidden] { display:none!important; }
-#hiplin-loading::before { content:"";position:absolute;inset:14px;border:1px solid #805a3026;pointer-events:none; }
+/* Paint the paper on an ordinary child layer, so the viewport-fixed surface
+   stays black before and after the opening instead of tinting Safari brown. */
+#hiplin-loading::before { content:"";position:absolute;inset:0;z-index:-1;background:#cfb184;background-image:linear-gradient(90deg,transparent 19.8%,#79562c12 20%,#ffe8bd24 20.2%,transparent 20.5%),linear-gradient(0deg,transparent 75%,#79562c14 75.2%,#ffe8bd28 75.4%,transparent 75.7%),radial-gradient(ellipse at 45% 35%,#ead0a6aa,transparent 80%);outline:1px solid #805a3026;outline-offset:-15px;pointer-events:none; }
 #hiplin-loading::after { content:"";position:absolute;left:0;right:0;bottom:0;height:8px;background:repeating-linear-gradient(90deg,#9c764d 0 1px,#c5a477 1px 4px,#dfc397 4px 6px);opacity:.55;pointer-events:none; }
 .hiplin-paper-grain { position:absolute;inset:0;opacity:.12;mix-blend-mode:multiply;pointer-events:none; }
 .hiplin-loading-heading { position:absolute;top:26%;left:24px;right:24px;text-align:center; }
