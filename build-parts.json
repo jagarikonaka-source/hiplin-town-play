@@ -1,0 +1,12 @@
+[
+  {
+    "path": "Build/HiplinTownWebGL.data.unityweb",
+    "size": 111678758,
+    "sha256": "90c4e7848243ee7574d69a0351f9f5e51fe1b11b7ac07dcf266c6c20430a3640",
+    "parts": [
+      "291f53d58466e883.000.part",
+      "291f53d58466e883.001.part",
+      "291f53d58466e883.002.part"
+    ]
+  }
+]

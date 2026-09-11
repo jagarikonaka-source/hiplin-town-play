@@ -18,6 +18,10 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      - name: Test build file assembly
+        run: python3 scripts/test-build-parts.py
+      - name: Restore verified Unity build files
+        run: python3 scripts/assemble-build.py
       - name: Verify build
         run: |
           test -f site/index.html
