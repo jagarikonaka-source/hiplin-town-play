@@ -3,7 +3,7 @@
 html, body, #unity-container, #unity-fullscreen-container, #unity-canvas { background: #000; }
 html::backdrop, #unity-fullscreen-container::backdrop, #unity-canvas::backdrop { background: #000; }
 #hiplin-loading { position:fixed;inset:0;z-index:30;overflow-x:hidden;overflow-y:auto;isolation:isolate;background: #000;color:#513d29;font-family:system-ui,-apple-system,sans-serif; }
-#hiplin-loading[hidden], #hiplin-loading [hidden] { display:none!important; }
+#hiplin-loading[hidden], #hiplin-loading-retry[hidden] { display:none!important; }
 /* Paint the paper on an ordinary child layer, so the viewport-fixed surface
    stays black before and after the opening instead of tinting Safari brown. */
 #hiplin-loading::before { content:"";position:absolute;inset:0;z-index:-1;background:#cfb184;background-image:linear-gradient(90deg,transparent 19.8%,#79562c12 20%,#ffe8bd24 20.2%,transparent 20.5%),linear-gradient(0deg,transparent 75%,#79562c14 75.2%,#ffe8bd28 75.4%,transparent 75.7%),radial-gradient(ellipse at 45% 35%,#ead0a6aa,transparent 80%);outline:1px solid #805a3026;outline-offset:-15px;pointer-events:none; }
@@ -33,43 +33,3 @@ html::backdrop, #unity-fullscreen-container::backdrop, #unity-canvas::backdrop {
 @media (max-width:600px) { .hiplin-loading-heading {top:24%;} .hiplin-loading-content {width:100%;bottom:max(17%,env(safe-area-inset-bottom));} #hiplin-walker {width:158px;height:158px;} .hiplin-walkway {height:145px;margin:0 55px;} }
 @media (max-height:600px) { .hiplin-loading-heading {top:max(12%,env(safe-area-inset-top));} .hiplin-loading-content {bottom:max(7%,env(safe-area-inset-bottom));} #hiplin-walker {width:125px;height:125px;} .hiplin-walkway {height:110px;} .hiplin-loading-note span,.hiplin-loading-eyebrow {display:none;} #hiplin-loading-title {font-size:30px;} .hiplin-loading-caption {margin-top:6px;} .hiplin-loading-note {margin-top:10px;} }
 @media (prefers-reduced-motion:reduce) { .hiplin-sprite-sheet {animation:none;} #hiplin-walker,#hiplin-loading-fill {transition:none;} }
-
-/* The same paper Hiplin pauses beside a short welcome after Unity is ready. */
-#hiplin-loading { transition:opacity .32s ease; }
-#hiplin-loading[data-entering] { opacity:0; }
-#hiplin-loading[data-welcome] .hiplin-loading-heading { top:max(12%,env(safe-area-inset-top)); }
-#hiplin-loading[data-welcome] .hiplin-loading-content { top:42%;bottom:auto; }
-#hiplin-loading[data-welcome] .hiplin-walkway { display:grid;grid-template-columns:180px minmax(0,1fr);align-items:center;gap:20px;height:auto;min-height:190px;margin:0; }
-#hiplin-loading[data-welcome] #hiplin-walker { position:relative;left:auto!important;bottom:auto;transform:none;transition:none; }
-#hiplin-loading[data-welcome] .hiplin-sprite-sheet { animation:none;transform:translate(0,-627px); }
-#hiplin-loading[data-speaking] .hiplin-sprite { animation:hiplin-greeting .42s ease-in-out infinite alternate; }
-@keyframes hiplin-greeting { to { transform:translateY(-3px) rotate(-1deg); } }
-#hiplin-welcome { position:relative;box-sizing:border-box;background:#f4e6cc;border:1px solid #967249;border-radius:10px;padding:22px 24px;box-shadow:3px 4px 0 #79562c18; }
-#hiplin-welcome::before { content:"";position:absolute;left:-9px;top:50%;width:16px;height:16px;background:#f4e6cc;border-left:1px solid #967249;border-bottom:1px solid #967249;transform:rotate(45deg); }
-.hiplin-welcome-name { margin:0 0 10px;font-size:11px;letter-spacing:.17em;font-weight:800;color:#866543; }
-#hiplin-welcome-text { min-height:3.8em;margin:0;font-size:clamp(15px,2vw,18px);line-height:1.9;font-weight:500;white-space:pre-line;overflow-wrap:anywhere; }
-#hiplin-loading-enter { display:block;min-width:180px;min-height:50px;margin:28px auto 0;padding:12px 24px;border:1px solid #60452e;border-radius:5px;background:#624831;color:#fff3dd;font:600 14px system-ui,sans-serif;letter-spacing:.08em;box-shadow:0 3px 0 #49341f;cursor:pointer;touch-action:manipulation; }
-#hiplin-loading-enter span { margin-left:24px; }
-#hiplin-loading-enter:hover { background:#725439; }
-#hiplin-loading-enter:active { transform:translateY(2px);box-shadow:0 1px 0 #49341f; }
-#hiplin-loading-enter:focus-visible { outline:2px solid #513d29;outline-offset:5px; }
-#hiplin-loading-enter:disabled { cursor:default; }
-#hiplin-loading[data-welcome] .hiplin-loading-note { display:none; }
-.hiplin-sr-only { position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap; }
-@media (max-width:600px) {
-  #hiplin-loading[data-welcome] .hiplin-loading-content { top:37%; }
-  #hiplin-loading[data-welcome] .hiplin-walkway { grid-template-columns:96px minmax(0,1fr);gap:4px;min-height:172px; }
-  #hiplin-loading[data-welcome] #hiplin-walker { width:112px;height:112px;margin-left:-12px; }
-  #hiplin-welcome { padding:16px 14px; }
-  #hiplin-welcome-text { min-height:7.6em;font-size:15px; }
-}
-@media (max-height:600px) and (min-width:601px) {
-  #hiplin-loading[data-welcome] .hiplin-loading-heading { top:max(7%,env(safe-area-inset-top)); }
-  #hiplin-loading[data-welcome] .hiplin-loading-content { top:26%;padding-bottom:max(24px,env(safe-area-inset-bottom)); }
-  #hiplin-loading[data-welcome] .hiplin-walkway { min-height:132px;grid-template-columns:125px minmax(0,1fr);gap:12px; }
-  #hiplin-loading[data-welcome] #hiplin-walker { width:125px;height:125px;margin:0; }
-  #hiplin-welcome { padding:12px 18px; }
-  #hiplin-welcome-text { min-height:3.8em;font-size:15px; }
-  #hiplin-loading-enter { margin-top:14px; }
-}
-@media (prefers-reduced-motion:reduce) { #hiplin-loading {transition:none;} #hiplin-loading[data-speaking] .hiplin-sprite {animation:none;} }
