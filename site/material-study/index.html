@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f3eee4">
+  <meta name="description" content="HIPLIN TOWNのカフェとHiplinを対象に、少数素材の質感を比較・確認するページです。">
+  <title>紙の質感を見比べる | HIPLIN TOWN</title>
+  <link rel="stylesheet" href="study.css">
+  <script src="study.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#comparison">比較画像へ進む</a>
+  <div class="page">
+    <header class="site-header">
+      <a class="wordmark" href="../" aria-label="HIPLIN TOWNのゲームへ戻る">HIPLIN <span>TOWN</span></a>
+      <a class="back-link" href="../">ゲームへ戻る <span aria-hidden="true">↗</span></a>
+    </header>
+
+    <main>
+      <div class="intro">
+        <p class="eyebrow">MATERIAL STUDY <span>素材の比較ノート</span></p>
+        <h1>紙の表情を、見比べる。</h1>
+        <p class="lead">光の返し方と、細かな凹凸。カフェとHiplinの一部素材で、<br class="wide-only">紙らしい見え方を確かめるための比較です。</p>
+        <p class="scope-note">少数素材の比較・確認用です。本番ゲーム全体への質感変更は行っていません。</p>
+      </div>
+
+      <div class="subject-bar">
+        <div class="subject-tabs" role="tablist" aria-label="比較する対象">
+          <button id="tab-cafe" type="button" role="tab" aria-selected="true" aria-controls="study-panel" tabindex="0" data-subject="cafe">建物 <span>カフェ</span></button>
+          <button id="tab-hiplin" type="button" role="tab" aria-selected="false" aria-controls="study-panel" tabindex="-1" data-subject="hiplin">人物 <span>Hiplin</span></button>
+        </div>
+        <p class="subject-note">同じ対象を、条件を変えて撮影</p>
+      </div>
+
+      <div id="study-panel" role="tabpanel" aria-labelledby="tab-cafe" tabindex="0">
+        <section id="comparison" class="comparison-section" aria-labelledby="comparison-title">
+          <div class="section-heading">
+            <div><p class="eyebrow small">01 / COMPARE</p><h2 id="comparison-title">カフェの変更前と試験版</h2></div>
+            <p>境界を動かして見比べてください。</p>
+          </div>
+          <div class="comparison-card">
+            <div class="image-labels" aria-hidden="true">
+              <div><span class="label-kicker">CURRENT</span><strong>現行</strong></div>
+              <div class="trial-label"><span class="label-kicker">PAPER TEST</span><strong>低反射・凹凸1.5倍</strong></div>
+            </div>
+            <div id="comparison-stage" class="comparison-stage is-loading" style="--split:50%" aria-busy="true">
+              <img id="paper-image" width="1440" height="900" alt="カフェ：低反射・凹凸1.5倍の試験画像" draggable="false">
+              <img id="current-image" class="current-image" width="1440" height="900" alt="カフェ：現行設定の画像。左側に表示" draggable="false">
+              <div class="comparison-divider" aria-hidden="true"></div>
+            </div>
+            <p id="comparison-status" class="image-status" role="status">画像を読み込んでいます…</p>
+            <div class="slider-control">
+              <div class="slider-heading"><label for="comparison-slider">比較の境界</label><output id="split-output" for="comparison-slider">現行 50% / 試験 50%</output></div>
+              <input id="comparison-slider" type="range" min="0" max="100" step="1" value="50" aria-label="現行画像と試験画像の境界" aria-valuetext="左の現行50%、右の試験50%">
+              <div class="slider-foot"><p>画像を左右にドラッグ、または矢印キーで操作</p><button id="reset-comparison" class="text-button" type="button">中央に戻す</button></div>
+            </div>
+            <div class="original-links"><a id="current-original" href="images/cafe-current.png" target="_blank" rel="noopener">現行画像を原寸で開く <span aria-hidden="true">↗</span></a><a id="paper-original" href="images/cafe-paper.png" target="_blank" rel="noopener">試験画像を原寸で開く <span aria-hidden="true">↗</span></a></div>
+          </div>
+          <p class="comparison-caption">試験版は、Normalの強さを1から1.5、Smoothnessの倍率を1から0.5へ変更し、ほかの条件を保持しています。元から低反射の素材なので、違いは控えめです。</p>
+        </section>
+
+        <section class="diagnostic-section" aria-labelledby="diagnostic-title">
+          <div class="section-heading"><div><p class="eyebrow small">02 / LOOK CLOSER</p><h2 id="diagnostic-title">何が見え方に影響するか</h2></div><p>条件を一つずつ切り分ける補助画像です。</p></div>
+          <div class="diagnostic-card">
+            <fieldset class="diagnostic-options">
+              <legend class="visually-hidden">補助診断の表示条件</legend>
+              <label><input type="radio" name="diagnostic" value="current" checked><span>現行</span></label>
+              <label><input type="radio" name="diagnostic" value="source"><span>元画像・非圧縮</span></label>
+              <label><input type="radio" name="diagnostic" value="normal-off"><span>凹凸なし</span></label>
+              <label><input type="radio" name="diagnostic" value="raking"><span>斜め照明</span></label>
+            </fieldset>
+            <div class="diagnostic-description"><h3 id="diagnostic-label">現行設定</h3><p id="diagnostic-description">比較の基準になる画像です。ほかの条件と切り替えて、同じ場所の紙目や反射を見てください。</p></div>
+            <div id="diagnostic-frame" class="diagnostic-frame is-loading" aria-busy="true"><img id="diagnostic-image" width="1440" height="900" alt="カフェ：現行設定の補助診断画像" draggable="false"></div>
+            <p id="diagnostic-status" class="image-status" role="status">画像を読み込んでいます…</p>
+            <div class="diagnostic-footer"><span id="diagnostic-subject">カフェ / 現行設定</span><a id="diagnostic-original" href="images/cafe-current.png" target="_blank" rel="noopener">この画像を原寸で開く <span aria-hidden="true">↗</span></a></div>
+          </div>
+        </section>
+      </div>
+
+      <section class="findings" aria-labelledby="findings-title">
+        <p class="eyebrow small">OBSERVATIONS</p>
+        <h2 id="findings-title">今回の比較で見えたこと</h2>
+        <p>今回のDXT条件では、元の2K画像を非圧縮に戻しても、Normalを1.5倍にして反射を抑えても、見た目は大幅には変わりませんでした。斜めから光を当てると縦の紙目は見えやすくなりますが、木目のように見える傾向は残っています。</p>
+        <div class="next-study"><h3>次に、同じ少数素材で比較したいこと</h3><ul><li>屋根・ひさしの茶色い切り口</li><li>面の大きなうねり</li><li>紙を重ねた段差</li></ul><p>これらを通常のプレイ距離から読める大きさに調整するのが候補です。今回の比較では、形状の変更は行っていません。</p></div>
+      </section>
+
+      <section class="reading-notes" aria-labelledby="reading-title">
+        <div><p class="eyebrow small">03 / READING NOTES</p><h2 id="reading-title">比較するときのポイント</h2></div>
+        <div class="notes-grid">
+          <article><span class="note-number">A</span><h3>素材と元画像</h3><p>カフェ8材質とHiplin4材質、計12材質が供給素材を参照し、以前の上書きが無効であることを確認しています。Normal・SpecGlossの元画像も参照されています。「元画像・非圧縮」で、画像の縮小・圧縮による違いを見比べます。</p></article>
+          <article><span class="note-number">B</span><h3>紙目と描画画素</h3><p>WebGLはDPR 1で描画し、画質設定のrenderScaleは高1・中0.75・低0.5です。高DPI端末の物理画素すべては使いません。低画素の実画像比較は今回は含めていません。</p></article>
+          <article><span class="note-number">C</span><h3>光と実際の形状</h3><p>厚みを持つ形状は元からあります。「凹凸なし」と「斜め照明」で、細かな陰影と光の向きを切り分けます。材質の設定だけで紙らしさが完全に解決するとは限らないため、輪郭や折り目の見え方も確認します。</p></article>
+        </div>
+      </section>
+
+      <section id="capture-notes" class="capture-notes" aria-labelledby="capture-title">
+        <h2 id="capture-title">この比較画像について</h2>
+        <dl>
+          <div><dt>撮影方法</dt><dd>Unity Editorで、現行ゲームのCamera.mainを使い、通常の三人称距離で撮影した画像です。ブラウザやiPhone実機の映像ではありません。</dd></div>
+          <div><dt>比較の基準</dt><dd>公開版a9ab471相当のDXT材質を使った、確認済みの10枚です。</dd></div>
+          <div><dt>基本条件</dt><dd>Mobile_RPAsset、FOV 60°、距離9.5m、1440×900、昼・晴れ。メニュー・操作HUDを除いて撮影しています。DXTのWebGL圧縮設定を使ったEditor上の参考画像です。</dd></div>
+          <div><dt>カメラの角度</dt><dd>カフェはピッチ5°、Hiplinはピッチ18°です。同じ対象の比較中は位置・距離・角度を固定しています。</dd></div>
+          <div><dt>元の反射</dt><dd>SpecGloss元画像のSmoothness中央値は、壁が0.176、服が0.212です。元から反射が低い素材のため、倍率を半分にする試験でも見た目の差は小さくなります。</dd></div>
+          <div><dt>元画像比較</dt><dd>「元画像・非圧縮」は対象の元2K画像を非圧縮で参照して再描画する診断です。元画像の縮小・圧縮による影響と、描画画素数の影響を分けて見ます。</dd></div>
+          <div><dt>未測定の条件</dt><dd>実際のASTC描画と、iPhone実機の映像は未測定です。共有素材のASTC設定はv001の512とv002の1024が混在しているため、次の端末比較では対象の全36依存画像の条件を揃えて検証します。</dd></div>
+          <div><dt>変更の範囲</dt><dd>カフェ1軒とHiplinの一部素材を使った試験です。ゲーム全体の素材や形状の変更を示すものではありません。</dd></div>
+          <div><dt>見比べ方</dt><dd>最初に変更前後を同じ位置で比較し、その後に補助画像で原因を確認してください。拡大して細部を見る場合は「原寸で開く」を使えます。</dd></div>
+        </dl>
+      </section>
+      <p id="selection-announcement" class="visually-hidden" role="status"></p>
+      <noscript><p class="noscript">切り替えとスライダーにはJavaScriptが必要です。<a href="images/cafe-current.png">カフェの現行画像</a>・<a href="images/cafe-paper.png">試験画像</a>、<a href="images/hiplin-current.png">Hiplinの現行画像</a>・<a href="images/hiplin-paper.png">試験画像</a>を直接開けます。</p></noscript>
+    </main>
+    <footer class="site-footer"><span>HIPLIN TOWN <span class="footer-detail">素材の比較ノート</span></span><a href="../">ゲームへ戻る <span aria-hidden="true">↗</span></a></footer>
+  </div>
+</body>
+</html>
