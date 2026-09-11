@@ -21,6 +21,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <link rel="stylesheet" href="hiplin-loading.css?v=cf86b605d5d4eb056e45b54ba178e90bccbc824b99c9168ea4f2d52d1b9549f6">
 <script src="hiplin-loading.js?v=fda8994ff49711a2ef35a90c5d2b002ce3fff22963fc466275d9f67090728d64"></script>
+    <script src="hiplin-device-build.js?v=23e865b78697a60300ee9589b6ae1e9a3b283367520e03b30653d59eedf14741"></script>
 </head>
   <body>
 <section id="hiplin-loading" aria-labelledby="hiplin-loading-title">
@@ -171,6 +172,22 @@
       }
 
 
+      // HIPLIN device build selection begin
+      var mobileBuild = {
+        loaderUrl: "Build/Mobile/HiplinTownWebGL.loader.js?v=58e481a6201d082b8fbcd76bea129a47e2ac436136939cb652a2063a8e56b3d1",
+        dataUrl: "Build/Mobile/HiplinTownWebGL.data.unityweb?v=acfa96c8f69388f06bb2d18c031f67c3e55a9f7c409c8d429d5cadb91a9be244",
+        frameworkUrl: "Build/Mobile/HiplinTownWebGL.framework.js.unityweb?v=bf5643f13c89c66673aee8cfff41f056b213dd502b1ee89c26deca59cc03707b",
+        codeUrl: "Build/Mobile/HiplinTownWebGL.wasm.unityweb?v=ed85ff5fb2322fc4a848fbcc08282ad01d63eef8a006daf53a2e4cc887d3c4f3"
+      };
+      var deviceBuild = window.HiplinDeviceBuild.select();
+      if (deviceBuild === "astc") {
+        loaderUrl = mobileBuild.loaderUrl;
+        config.dataUrl = mobileBuild.dataUrl;
+        config.frameworkUrl = mobileBuild.frameworkUrl;
+        config.codeUrl = mobileBuild.codeUrl;
+      }
+      console.info("HIPLIN texture profile: " + deviceBuild);
+      // HIPLIN device build selection end
       var script = document.createElement("script");
       script.src = loaderUrl;
       script.onerror = () => window.HiplinLoading.fail();
