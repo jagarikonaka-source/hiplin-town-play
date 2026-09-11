@@ -4,6 +4,9 @@ html, body, #unity-container, #unity-fullscreen-container, #unity-canvas { backg
 html::backdrop, #unity-fullscreen-container::backdrop, #unity-canvas::backdrop { background: #000; }
 #hiplin-loading { position:fixed;inset:0;z-index:30;overflow-x:hidden;overflow-y:auto;isolation:isolate;background: #000;color:#513d29;font-family:system-ui,-apple-system,sans-serif; }
 #hiplin-loading[hidden], #hiplin-loading-retry[hidden] { display:none!important; }
+#hiplin-loading { opacity:1;transition:opacity .7s ease-in-out; }
+#hiplin-loading[data-revealing] { opacity:0; }
+#hiplin-loading[data-failed] { transition:none; }
 /* Paint the paper on an ordinary child layer, so the viewport-fixed surface
    stays black before and after the opening instead of tinting Safari brown. */
 #hiplin-loading::before { content:"";position:absolute;inset:0;z-index:-1;background:#cfb184;background-image:linear-gradient(90deg,transparent 19.8%,#79562c12 20%,#ffe8bd24 20.2%,transparent 20.5%),linear-gradient(0deg,transparent 75%,#79562c14 75.2%,#ffe8bd28 75.4%,transparent 75.7%),radial-gradient(ellipse at 45% 35%,#ead0a6aa,transparent 80%);outline:1px solid #805a3026;outline-offset:-15px;pointer-events:none; }
@@ -15,21 +18,21 @@ html::backdrop, #unity-fullscreen-container::backdrop, #unity-canvas::backdrop {
 #hiplin-loading-title span { font-weight:400; }
 .hiplin-loading-content { position:absolute;box-sizing:border-box;bottom:max(14%,env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);width:min(740px,90%);padding:0 max(24px,env(safe-area-inset-right)) 18px max(24px,env(safe-area-inset-left)); }
 .hiplin-walkway { position:relative;height:170px;margin:0 66px; }
-#hiplin-walker { position:absolute;bottom:0;left:0;width:180px;height:180px;transform:translate(-50%,6%);transition:left 1.5s linear; }
+#hiplin-walker { position:absolute;bottom:0;left:0;width:180px;height:180px;transform:translate(-50%,6%); }
 .hiplin-sprite { display:block;width:100%;height:100%;overflow:hidden; }
 .hiplin-sprite-sheet { animation:hiplin-walk-cycle 1.4s steps(1,end) infinite; }
 @keyframes hiplin-walk-cycle { 0%,100% {transform:translate(0,0);} 25% {transform:translate(-627px,0);} 50% {transform:translate(0,-627px);} 75% {transform:translate(-627px,-627px);} }
 .hiplin-track { position:relative;height:3px;background:#76593633;overflow:hidden; }
-#hiplin-loading-fill { height:100%;width:0;background:#745335;transition:width 1.5s linear; }
+#hiplin-loading-fill { height:100%;width:0;background:#745335; }
 .hiplin-loading-caption { display:flex;gap:12px;justify-content:space-between;font-size:12px;font-weight:500;margin-top:12px;line-height:1.8; }
 #hiplin-loading-percent { font-variant-numeric:tabular-nums; }
 .hiplin-loading-note { text-align:center;font-size:10px;letter-spacing:.23em;line-height:1.8;margin:24px 0 0;font-weight:700; }
 .hiplin-loading-note span { display:block;margin-top:5px;font-size:10px;font-weight:400;letter-spacing:.03em; }
-#hiplin-loading[data-failed] .hiplin-sprite-sheet { animation-play-state:paused; }
+#hiplin-loading[data-failed] .hiplin-sprite-sheet,#hiplin-loading[data-complete] .hiplin-sprite-sheet { animation-play-state:paused; }
 #hiplin-loading-retry { display:block;margin:12px auto 0;min-height:44px;padding:10px 22px;border:1px solid #725637;border-radius:3px;background:#e4c99f;color:#513d29;font:inherit;font-size:13px;cursor:pointer; }
 #hiplin-loading-retry:focus-visible { outline:2px solid #513d29;outline-offset:4px; }
 #unity-loading-container { display:none!important; }
 #unity-warning { z-index:40; }
 @media (max-width:600px) { .hiplin-loading-heading {top:24%;} .hiplin-loading-content {width:100%;bottom:max(17%,env(safe-area-inset-bottom));} #hiplin-walker {width:158px;height:158px;} .hiplin-walkway {height:145px;margin:0 55px;} }
 @media (max-height:600px) { .hiplin-loading-heading {top:max(12%,env(safe-area-inset-top));} .hiplin-loading-content {bottom:max(7%,env(safe-area-inset-bottom));} #hiplin-walker {width:125px;height:125px;} .hiplin-walkway {height:110px;} .hiplin-loading-note span,.hiplin-loading-eyebrow {display:none;} #hiplin-loading-title {font-size:30px;} .hiplin-loading-caption {margin-top:6px;} .hiplin-loading-note {margin-top:10px;} }
-@media (prefers-reduced-motion:reduce) { .hiplin-sprite-sheet {animation:none;} #hiplin-walker,#hiplin-loading-fill {transition:none;} }
+@media (prefers-reduced-motion:reduce) { .hiplin-sprite-sheet {animation:none;} #hiplin-loading {transition:none;} }
