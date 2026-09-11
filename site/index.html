@@ -19,11 +19,11 @@
 </style>
   <meta name="theme-color" content="#000000">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
-<link rel="stylesheet" href="hiplin-loading.css?v=6337db85f014ad7a4bed3fb6960cdc559c193905d49cac907683b9d6a0638719">
-<script src="hiplin-loading.js?v=70ec27715f165400abb8baae3c0eff10cd78ba4285665aadd008e2d1a2704000"></script>
+<link rel="stylesheet" href="hiplin-loading.css?v=2847536983e5a4bb8e7492740e62ea0925d2cc223fc5ac56463e782bd476d5a6">
+<script src="hiplin-loading.js?v=be3337573a265cadd1052f23192be607c71d4b15eca44344b0a4e82154abc8a0"></script>
 </head>
   <body>
-<section id="hiplin-loading" aria-labelledby="hiplin-loading-title">
+<section id="hiplin-loading" lang="ja" role="dialog" aria-modal="true" aria-labelledby="hiplin-loading-title" tabindex="-1">
   <svg class="hiplin-paper-grain" aria-hidden="true" width="100%" height="100%">
     <filter id="hiplin-paper-fibers"><feTurbulence type="fractalNoise" baseFrequency=".7" numOctaves="3" seed="8" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter>
     <rect width="100%" height="100%" filter="url(#hiplin-paper-fibers)"/>
@@ -33,7 +33,6 @@
     <h1 id="hiplin-loading-title">HIPLIN <span>TOWN</span></h1>
   </header>
   <div class="hiplin-loading-content">
-    <div id="hiplin-loading-progress" role="progressbar" aria-label="街の読み込み" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
       <div class="hiplin-walkway">
         <div id="hiplin-walker">
           <svg class="hiplin-sprite" viewBox="0 0 627 627" role="img" aria-label="ゲームと同じ服装のヒップリンが歩いています">
@@ -48,12 +47,19 @@
             <g class="hiplin-sprite-sheet"><image width="1254" height="1254" href="hiplin-walk-cardboard-v04.png" filter="url(#hiplin-cardboard-key)"/></g>
           </svg>
         </div>
+        <div id="hiplin-welcome" hidden>
+          <p class="hiplin-welcome-name">HIPLIN</p>
+          <p id="hiplin-welcome-text" aria-hidden="true"></p>
+          <p id="hiplin-welcome-announcement" class="hiplin-sr-only" role="status" aria-atomic="true"></p>
+        </div>
       </div>
+    <div id="hiplin-loading-progress" role="progressbar" aria-label="街の読み込み" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
       <div class="hiplin-track"><div id="hiplin-loading-fill"></div></div>
       <div class="hiplin-loading-caption"><span id="hiplin-loading-status" role="status">街を準備しています…</span><span id="hiplin-loading-percent" aria-hidden="true">0%</span></div>
     </div>
+    <button id="hiplin-loading-enter" type="button" hidden>街へ入る <span aria-hidden="true">→</span></button>
     <button id="hiplin-loading-retry" type="button" hidden>もう一度読み込む</button>
-    <p class="hiplin-loading-note">NOW LOADING <span>読み込みが終わると、自動で街へ入ります。</span></p>
+    <p class="hiplin-loading-note">NOW LOADING <span>街の準備ができるまで、もう少し。</span></p>
   </div>
 </section>
 
