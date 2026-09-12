@@ -21,5 +21,15 @@
       "b88ff71d50653628.001.part",
       "b88ff71d50653628.002.part"
     ]
+  },
+  {
+    "path": "Build/UnityTrial/HiplinTownWebGL.data.unityweb",
+    "size": 110929439,
+    "sha256": "525972d965f15a6c50a901df649c3805db3f7eafdb68a51a17158efe4f7dd8f4",
+    "parts": [
+      "a69e85b206b05fd9.000.part",
+      "a69e85b206b05fd9.001.part",
+      "a69e85b206b05fd9.002.part"
+    ]
   }
 ]

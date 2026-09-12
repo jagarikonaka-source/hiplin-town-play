@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>HIPLIN TOWN</title>
+    <link rel="shortcut icon" href="TemplateData/favicon.ico">
+    <link rel="stylesheet" href="TemplateData/style.css">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="HIPLIN TOWN">
+    <script src="hiplin-multiplayer.js?v=d0c56b38a3023424e49709d54d3aea5245888796eda50456ff032d99a37ca9c1"></script>
+    <script src="hiplin-display.js?v=6a6357123079ff6ecd71ab7d6ec2157f503cd495e4fa22ecdca2f4f5af534d73"></script>
+    <style>
+      html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #000; }
+      #unity-container.unity-desktop { position: fixed; inset: 0; left: 0; top: 0; transform: none; }
+      #unity-fullscreen-container, #unity-canvas { width: 100% !important; height: 100% !important; }
+      #unity-canvas { touch-action: none; overscroll-behavior: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+      #unity-footer { display: none; }
+</style>
+  <meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<link rel="stylesheet" href="hiplin-loading.css?v=cf86b605d5d4eb056e45b54ba178e90bccbc824b99c9168ea4f2d52d1b9549f6">
+<script src="hiplin-loading.js?v=fda8994ff49711a2ef35a90c5d2b002ce3fff22963fc466275d9f67090728d64"></script>
+    <script src="hiplin-device-build.js?v=23e865b78697a60300ee9589b6ae1e9a3b283367520e03b30653d59eedf14741"></script>
+    <script src="hiplin-startup-downloads.js?v=0d5ea5a3619d6d831cb79f6c1fd88e989a6612f9a5ce017b68f9b509c97c3d1a"></script>
+<script src="hiplin-graphics-trial.js?v=6431a9c896242c836adb7689342194dfd01e58c034bd0a1ab41bfe73b20102ea"></script>
+</head>
+  <body>
+<section id="hiplin-loading" aria-labelledby="hiplin-loading-title">
+  <svg class="hiplin-paper-grain" aria-hidden="true" width="100%" height="100%">
+    <filter id="hiplin-paper-fibers"><feTurbulence type="fractalNoise" baseFrequency=".7" numOctaves="3" seed="8" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/></filter>
+    <rect width="100%" height="100%" filter="url(#hiplin-paper-fibers)"/>
+  </svg>
+  <header class="hiplin-loading-heading">
+    <p class="hiplin-loading-eyebrow">音楽と、のんびり暮らす街。</p>
+    <h1 id="hiplin-loading-title">HIPLIN <span>TOWN</span></h1>
+  </header>
+  <div class="hiplin-loading-content">
+    <div id="hiplin-loading-progress" role="progressbar" aria-label="街の読み込み" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+      <div class="hiplin-walkway">
+        <div id="hiplin-walker">
+          <svg class="hiplin-sprite" viewBox="0 0 627 627" role="img" aria-label="ゲームと同じ服装のヒップリンが歩いています">
+            <defs>
+              <!-- Key only the green backdrop; keep dark hair/jacket and the white shirt opaque. -->
+              <filter id="hiplin-cardboard-key" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+                <feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  -1 1 -1 0 0"/>
+                <feComponentTransfer result="cutout"><feFuncA type="table" tableValues="1 0 0 0 0 0 0 0 0"/></feComponentTransfer>
+                <feComposite in="SourceGraphic" in2="cutout" operator="in"/>
+              </filter>
+            </defs>
+            <g class="hiplin-sprite-sheet"><image width="1254" height="1254" href="hiplin-walk-cardboard-v04.png" filter="url(#hiplin-cardboard-key)"/></g>
+          </svg>
+        </div>
+      </div>
+      <div class="hiplin-track"><div id="hiplin-loading-fill"></div></div>
+      <div class="hiplin-loading-caption"><span id="hiplin-loading-status" role="status">街を準備しています…</span><span id="hiplin-loading-percent" aria-hidden="true">0%</span></div>
+    </div>
+    <button id="hiplin-loading-retry" type="button" hidden>もう一度読み込む</button>
+    <p class="hiplin-loading-note">NOW LOADING <span>読み込みが終わると、自動で街へ入ります。</span></p>
+  </div>
+</section>
+
+    <div id="unity-container" class="unity-desktop">
+      <div id="unity-fullscreen-container">
+        <canvas id="unity-canvas" width="960" height="600" tabindex="-1"></canvas>
+        <div id="unity-loading-container">
+          <div id="unity-loading-bar">
+            <div id="unity-logo"></div>
+            <div id="unity-progress-bar-empty">
+              <div id="unity-progress-bar-full"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="unity-warning"> </div>
+      <div id="unity-footer">
+        <div id="unity-logo-title-footer"></div>
+        <div id="unity-fullscreen-button"></div>
+        <div id="unity-build-title">HIPLIN TOWN</div>
+      </div>
+    </div>
+    <script>
+      let canvas = document.querySelector("#unity-canvas");
+      let fullscreenContainer = document.querySelector("#unity-fullscreen-container");
+
+      // Shows a temporary message banner/ribbon for a few seconds, or
+      // a permanent error message on top of the canvas if type=='error'.
+      // If type=='warning', a yellow highlight color is used.
+      // Modify or remove this function to customize the visually presented
+      // way that non-critical warnings and error messages are presented to the
+      // user.
+      function unityShowBanner(msg, type) {
+        var warningBanner = document.querySelector("#unity-warning");
+        function updateBannerVisibility() {
+          warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
+        }
+        var div = document.createElement('div');
+        div.innerHTML = msg;
+        warningBanner.appendChild(div);
+        if (type == 'error') div.style = 'background: red; padding: 10px;';
+        else {
+          if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
+          setTimeout(function() {
+            warningBanner.removeChild(div);
+            updateBannerVisibility();
+          }, 5000);
+        }
+        updateBannerVisibility();
+      }
+
+      var buildUrl = "Build";
+      var loaderUrl = buildUrl + "/HiplinTownWebGL.loader.js?v=4a67d584338d5560b4cfec0e3799f7117c06b71dfaada5229c8d62b46bb1e5f2";
+      var config = {
+        arguments: [],
+        dataUrl: buildUrl + "/HiplinTownWebGL.data.unityweb?v=aee9aeb842cffb61977ae1a67d1cdb02dedcfd4e91a00e83608f7039f831115a",
+        frameworkUrl: buildUrl + "/HiplinTownWebGL.framework.js.unityweb?v=d48306f66a4d94b22e0886577245b6a7f13ba8ba24f210a8853a1d9e9dd94c25",
+        codeUrl: buildUrl + "/HiplinTownWebGL.wasm.unityweb?v=54fd7df1a825e965fd46d7c99b23191abf99b4ad6dabc560766fce6b5ad4dee5",
+        streamingAssetsUrl: "StreamingAssets",
+
+        // If you have a custom web site structure, or want to place multiple Unity build instances on the same page,
+        // you can pass fullscreenElementID: "my-unity-fullscreen-container-id", in this configuration field to
+        // explicitly point to the element tree root that is displayed in fullscreen mode.
+        fullscreenElementID: "unity-fullscreen-container",
+
+        companyName: "DefaultCompany",
+        productName: "HIPLIN TOWN",
+        productVersion: "0.1.0",
+        showBanner: unityShowBanner,
+        // errorHandler: function(err, url, line) {
+        //    alert("error " + err + " occurred at line " + line);
+        //    // Return 'true' if you handled this error and don't want Unity
+        //    // to process it further, 'false' otherwise.
+        //    return true;
+        // },
+      };
+
+      // By default, Unity keeps WebGL canvas render target size matched with
+      // the DOM size of the canvas element (scaled by window.devicePixelRatio)
+      // Set this to false if you want to decouple this synchronization from
+      // happening inside the engine, and you would instead like to size up
+      // the canvas DOM size and WebGL render target sizes yourself.
+      // config.matchWebGLToCanvasSize = false;
+
+      // If you would like all file writes inside Unity Application.persistentDataPath
+      // directory to automatically persist so that the contents are remembered when
+      // the user revisits the site the next time, uncomment the following line:
+      config.autoSyncPersistentDataPath = true;
+      // Keep fixed-pixel Unity controls readable on high-DPI displays.
+      config.devicePixelRatio = 1;
+      // This autosyncing is currently not the default behavior to avoid regressing
+      // existing user projects that might rely on the earlier manual
+      // JS_FileSystem_Sync() behavior, but in future Unity version, this will be
+      // expected to change.
+
+      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        // Mobile device style: fill the whole browser client area with the game canvas:
+
+        var meta = document.createElement('meta');
+        meta.name = 'viewport';
+        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes, viewport-fit=cover';
+        document.getElementsByTagName('head')[0].appendChild(meta);
+        document.querySelector("#unity-container").className = "unity-mobile";
+        canvas.className = "unity-mobile";
+
+        // To lower canvas resolution on mobile devices to gain some
+        // performance, uncomment the following line:
+        // config.devicePixelRatio = 1;
+
+
+      } else {
+        // Desktop style: Render the game canvas container in a window that can be maximized to fullscreen:
+        fullscreenContainer.style.width = "100vw";
+        fullscreenContainer.style.height = "100vh";
+      }
+
+
+      // HIPLIN device build selection begin
+      var mobileBuild = {
+        loaderUrl: "Build/Mobile/HiplinTownWebGL.loader.js?v=4a67d584338d5560b4cfec0e3799f7117c06b71dfaada5229c8d62b46bb1e5f2",
+        dataUrl: "Build/Mobile/HiplinTownWebGL.data.unityweb?v=473bb950c649ca50a3504c7ca7836540ae03f392a18e666666d3abc9f7b5d730",
+        frameworkUrl: "Build/Mobile/HiplinTownWebGL.framework.js.unityweb?v=d48306f66a4d94b22e0886577245b6a7f13ba8ba24f210a8853a1d9e9dd94c25",
+        codeUrl: "Build/Mobile/HiplinTownWebGL.wasm.unityweb?v=651c2135c4417a195e40f0d262b8b562f238e49b34d40e59af6f89c8aaa6cb73"
+      };
+      var deviceBuild = window.HiplinDeviceBuild.select();
+      if (deviceBuild === "astc") {
+        loaderUrl = mobileBuild.loaderUrl;
+        config.dataUrl = mobileBuild.dataUrl;
+        config.frameworkUrl = mobileBuild.frameworkUrl;
+        config.codeUrl = mobileBuild.codeUrl;
+      }
+      console.info("HIPLIN texture profile: " + deviceBuild);
+      // HIPLIN device build selection end
+      // HIPLIN streamed startup begin
+      var restoreStartupDownloads = function () {};
+      if (deviceBuild === "astc") {
+        restoreStartupDownloads = window.HiplinStartupDownloads.install(config, {
+          "Build/Mobile/HiplinTownWebGL.data.unityweb?v=473bb950c649ca50a3504c7ca7836540ae03f392a18e666666d3abc9f7b5d730": 150100000,
+          "Build/Mobile/HiplinTownWebGL.framework.js.unityweb?v=d48306f66a4d94b22e0886577245b6a7f13ba8ba24f210a8853a1d9e9dd94c25": 360848,
+          "Build/Mobile/HiplinTownWebGL.wasm.unityweb?v=651c2135c4417a195e40f0d262b8b562f238e49b34d40e59af6f89c8aaa6cb73": 38678045
+        });
+      }
+      // HIPLIN streamed startup end
+      var script = document.createElement("script");
+      script.src = loaderUrl;
+      script.onerror = () => { restoreStartupDownloads(); window.HiplinLoading.fail(); };
+      script.onload = () => {
+        const loadingContainer = document.querySelector("#unity-loading-container");
+        const progressBarFull = document.querySelector("#unity-progress-bar-full");
+
+        createUnityInstance(canvas, config, (progress) => {
+          window.HiplinLoading.progress(progress);
+          if (progress < 1) {
+            loadingContainer.style.display = "block";
+            progressBarFull.style.width = 100 * progress + "%";
+          } else {
+            loadingContainer.style.display = "none";
+          }
+        }).then((unityInstance) => {
+                restoreStartupDownloads();
+                window.HiplinLoading.ready();
+                window.HiplinGraphicsTrial.ready(unityInstance,deviceBuild);
+                window.HiplinDisplay.ready();
+                document.querySelector("#unity-fullscreen-button").onclick = () => {
+                  unityInstance.SetFullscreen(1);
+                };
+
+              }).catch((message) => {
+                window.HiplinGraphicsTrial.fail();
+                restoreStartupDownloads();
+                window.HiplinLoading.fail();
+                alert(message);
+              });
+            };
+
+      document.body.appendChild(script);
+
+    </script>
+  </body>
+</html>

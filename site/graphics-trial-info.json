@@ -1,0 +1,14 @@
+{
+  "builtAtUtc": "2026-09-12T08:32:31.1085370Z",
+  "mode": "unity-look",
+  "textureCompression": "ASTC 6x6",
+  "shadowResolution": 2048,
+  "cascades": 4,
+  "softShadows": true,
+  "additionalLightShadows": true,
+  "ssao": true,
+  "renderScale": 1,
+  "devicePixelRatio": 1,
+  "grassDensity": "same as normal mobile",
+  "normalUnchanged": true
+}
