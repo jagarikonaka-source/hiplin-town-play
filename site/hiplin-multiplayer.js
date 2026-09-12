@@ -101,6 +101,15 @@
       #hiplin-chat-feed-empty { margin:0;font:12px/1.5 system-ui;color:#6d5e4d; }
       #hiplin-chat-feed #hiplin-chat-compose { width:100%;margin-top:6px;padding:8px 12px;text-align:left;border:1px solid #bdab8c;background:#fff9ed; }
       @media (max-height:500px) { #hiplin-chat-feed { width:360px; } #hiplin-chat-feed-log { max-height:42px; } }
+      @media (max-height:500px) and (orientation:landscape) {
+        #hiplin-chat-feed { display:flex;align-items:center;gap:6px;width:var(--hiplin-chat-compact-width,360px);min-height:46px;padding:0 6px;background:#f5ead5d9; }
+        #hiplin-chat-feed header { display:contents; }
+        #hiplin-chat-feed header strong, #hiplin-chat-feed #hiplin-chat-compose { display:none; }
+        #hiplin-chat-feed header button { order:2;flex:0 0 44px;padding:0; }
+        #hiplin-chat-feed-log, #hiplin-chat-feed-empty { flex:1;min-width:0;max-height:20px;margin:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis; }
+        #hiplin-chat-feed-log:empty, #hiplin-chat-feed-log > div:not(:last-child) { display:none; }
+        #hiplin-chat-feed-log > div { padding:0;border:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis; }
+      }
       #hiplin-chat-overlay { position:fixed;inset:0;box-sizing:border-box;padding:16px max(16px,env(safe-area-inset-right)) 16px max(16px,env(safe-area-inset-left));display:grid;place-items:center;background:#20170faa;pointer-events:auto; }
       #hiplin-chat-panel { width:min(380px,100%);max-height:100%;overflow:auto;box-sizing:border-box;padding:16px;border:1px solid #bdab8c;border-radius:4px;background:#f5ead5 var(--hiplin-paper) center/700px;color:#40362b;box-shadow:0 12px 48px #0006; }
       #hiplin-chat-panel button { min-height:44px;cursor:pointer;touch-action:manipulation; }
@@ -160,6 +169,9 @@
       const top = parseFloat(safe.paddingTop) || 0;
       const safeWidth = width - left - right, safeHeight = height - top - bottom;
       let dockBottom = 12;
+      let center = (rect?.left || 0) + left + safeWidth / 2;
+      let chatBottom;
+      root.style.removeProperty('--hiplin-chat-compact-width');
       const touch = global.matchMedia('(any-pointer: coarse)').matches || width <= 600;
       if (touch) {
         const radius = Math.min(safeWidth * .18, safeHeight * .19);
@@ -168,10 +180,21 @@
         const jumpRadius = Math.min(48, Math.max(28, radius * .58));
         if (dockLeft < radius * 2.4 || dockLeft < 20 + jumpRadius * 2)
           dockBottom = Math.max(radius * 2.4, 24 + jumpRadius * 2) + 12;
+        // On short phones the native emote row rises above the controls.
+        // Put the thin chat strip in the free gap below it instead of stacking upward.
+        if (width > height && height <= 500 && dockBottom > 12) {
+          const gapLeft = radius * 2.4 + 12;
+          const gapRight = safeWidth - 20 - jumpRadius * 2 - 12;
+          if (gapRight - gapLeft >= 220) {
+            center = (rect?.left || 0) + left + (gapLeft + gapRight) / 2;
+            chatBottom = 12;
+            root.style.setProperty('--hiplin-chat-compact-width', Math.min(360, gapRight - gapLeft) + 'px');
+          }
+        }
       }
       const canvasBottom = rect ? Math.max(0, doc.documentElement.clientHeight - rect.bottom) : 0;
-      root.style.setProperty('--hiplin-chat-bottom', (canvasBottom + bottom + dockBottom + 80) + 'px');
-      root.style.setProperty('--hiplin-chat-center', ((rect?.left || 0) + left + safeWidth / 2) + 'px');
+      root.style.setProperty('--hiplin-chat-bottom', (canvasBottom + bottom + (chatBottom ?? dockBottom + 80)) + 'px');
+      root.style.setProperty('--hiplin-chat-center', center + 'px');
     }
     root.style.padding = 'env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)';
     feed.style.left = launcher.style.left = 'var(--hiplin-chat-center,50%)';
