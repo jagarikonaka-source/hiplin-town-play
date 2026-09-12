@@ -1,5 +1,5 @@
 {
-  "builtAtUtc": "2026-09-12T08:32:31.1085370Z",
+  "builtAtUtc": "2026-09-12T09:56:36.2440440Z",
   "mode": "unity-look",
   "textureCompression": "ASTC 6x6",
   "shadowResolution": 2048,
@@ -10,5 +10,10 @@
   "renderScale": 1,
   "devicePixelRatio": 1,
   "grassDensity": "same as normal mobile",
-  "normalUnchanged": true
+  "normalUnchanged": true,
+  "features": [
+    "emote-dock",
+    "emote-wheel",
+    "emotes-v1"
+  ]
 }

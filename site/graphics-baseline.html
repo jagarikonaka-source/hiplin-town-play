@@ -109,12 +109,12 @@
       }
 
       var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/HiplinTownWebGL.loader.js?v=4a67d584338d5560b4cfec0e3799f7117c06b71dfaada5229c8d62b46bb1e5f2";
+      var loaderUrl = buildUrl + "/HiplinTownWebGL.loader.js?v=4a6fb7ddd05c7f4e417f03a9860d2fef99a66143fd772d2b4a8682f1c97029f5";
       var config = {
         arguments: [],
-        dataUrl: buildUrl + "/HiplinTownWebGL.data.unityweb?v=aee9aeb842cffb61977ae1a67d1cdb02dedcfd4e91a00e83608f7039f831115a",
+        dataUrl: buildUrl + "/HiplinTownWebGL.data.unityweb?v=23c4116ab14f9f951f7b98ae9b13c7fa3b924643b31869e66e0a6a7c18143457",
         frameworkUrl: buildUrl + "/HiplinTownWebGL.framework.js.unityweb?v=d48306f66a4d94b22e0886577245b6a7f13ba8ba24f210a8853a1d9e9dd94c25",
-        codeUrl: buildUrl + "/HiplinTownWebGL.wasm.unityweb?v=54fd7df1a825e965fd46d7c99b23191abf99b4ad6dabc560766fce6b5ad4dee5",
+        codeUrl: buildUrl + "/HiplinTownWebGL.wasm.unityweb?v=b591a510c98f129252402d6e1cd309601fde5893029ba4a218ea462207588cdf",
         streamingAssetsUrl: "StreamingAssets",
 
         // If you have a custom web site structure, or want to place multiple Unity build instances on the same page,
@@ -176,10 +176,10 @@
 
       // HIPLIN device build selection begin
       var mobileBuild = {
-        loaderUrl: "Build/Mobile/HiplinTownWebGL.loader.js?v=4a67d584338d5560b4cfec0e3799f7117c06b71dfaada5229c8d62b46bb1e5f2",
-        dataUrl: "Build/Mobile/HiplinTownWebGL.data.unityweb?v=473bb950c649ca50a3504c7ca7836540ae03f392a18e666666d3abc9f7b5d730",
+        loaderUrl: "Build/Mobile/HiplinTownWebGL.loader.js?v=4a6fb7ddd05c7f4e417f03a9860d2fef99a66143fd772d2b4a8682f1c97029f5",
+        dataUrl: "Build/Mobile/HiplinTownWebGL.data.unityweb?v=96f2997c902d44cf00d1ca0c1e16626e491a4d92f27b32899b0304ab328661fe",
         frameworkUrl: "Build/Mobile/HiplinTownWebGL.framework.js.unityweb?v=d48306f66a4d94b22e0886577245b6a7f13ba8ba24f210a8853a1d9e9dd94c25",
-        codeUrl: "Build/Mobile/HiplinTownWebGL.wasm.unityweb?v=651c2135c4417a195e40f0d262b8b562f238e49b34d40e59af6f89c8aaa6cb73"
+        codeUrl: "Build/Mobile/HiplinTownWebGL.wasm.unityweb?v=83195b91a511a5bbbed76caf2ec539074e9f0ebdda081716335083a5df2a8e57"
       };
       var deviceBuild = window.HiplinDeviceBuild.select();
       if (deviceBuild === "astc") {
@@ -194,9 +194,9 @@
       var restoreStartupDownloads = function () {};
       if (deviceBuild === "astc") {
         restoreStartupDownloads = window.HiplinStartupDownloads.install(config, {
-          "Build/Mobile/HiplinTownWebGL.data.unityweb?v=473bb950c649ca50a3504c7ca7836540ae03f392a18e666666d3abc9f7b5d730": 150100000,
+          "Build/Mobile/HiplinTownWebGL.data.unityweb?v=96f2997c902d44cf00d1ca0c1e16626e491a4d92f27b32899b0304ab328661fe": 150101524,
           "Build/Mobile/HiplinTownWebGL.framework.js.unityweb?v=d48306f66a4d94b22e0886577245b6a7f13ba8ba24f210a8853a1d9e9dd94c25": 360848,
-          "Build/Mobile/HiplinTownWebGL.wasm.unityweb?v=651c2135c4417a195e40f0d262b8b562f238e49b34d40e59af6f89c8aaa6cb73": 38678045
+          "Build/Mobile/HiplinTownWebGL.wasm.unityweb?v=83195b91a511a5bbbed76caf2ec539074e9f0ebdda081716335083a5df2a8e57": 38689948
         });
       }
       // HIPLIN streamed startup end
