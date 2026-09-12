@@ -89,17 +89,18 @@
     style.textContent = `
       #hiplin-chat-overlay[hidden], #hiplin-chat-launcher[hidden], #hiplin-chat-unread[hidden], #hiplin-chat-feed[hidden] { display:none!important; }
       [aria-label="ロビーチャット"][hidden] { display:none!important; }
-      #hiplin-chat-launcher { position:fixed;right:calc(12px + env(safe-area-inset-right));top:calc(64px + env(safe-area-inset-top));min-height:44px;padding:8px 10px;border:1px solid #bdab8c;box-sizing:border-box;border-radius:4px;background:#f5ead5 var(--hiplin-paper) center/700px;color:#40362b;box-shadow:0 2px 4px #0003;cursor:pointer;pointer-events:auto;touch-action:manipulation;font:14px system-ui; }
+      #hiplin-chat-launcher { position:fixed;left:50%;bottom:var(--hiplin-chat-bottom,92px);transform:translateX(-50%);min-height:44px;padding:8px 14px;border:1px solid #bdab8c;box-sizing:border-box;border-radius:6px;background:#f5ead5 var(--hiplin-paper) center/700px;color:#40362b;box-shadow:0 2px 4px #0003;cursor:pointer;pointer-events:auto;touch-action:manipulation;font:14px system-ui;white-space:nowrap; }
       #hiplin-chat-unread { display:inline-block;margin-left:6px;min-width:20px;padding:2px 4px;box-sizing:border-box;border-radius:12px;background:#a44529;color:#fff;text-shadow:none;font:bold 12px system-ui; }
-      #hiplin-chat-feed { position:fixed;right:calc(12px + env(safe-area-inset-right));top:calc(64px + env(safe-area-inset-top));width:270px;max-width:calc(100vw - 24px - env(safe-area-inset-left) - env(safe-area-inset-right));box-sizing:border-box;padding:0 10px 6px;border:1px solid #bdab8c;border-radius:4px;background:#f5ead5ed;color:#40362b;box-shadow:0 2px 6px #0002;pointer-events:auto; }
+      #hiplin-chat-feed { position:fixed;left:50%;bottom:var(--hiplin-chat-bottom,92px);transform:translateX(-50%);width:400px;max-width:calc(100vw - 24px - env(safe-area-inset-left) - env(safe-area-inset-right));box-sizing:border-box;padding:0 10px 8px;border:1px solid #bdab8c;border-radius:6px;background:#f5ead5ed;color:#40362b;box-shadow:0 2px 6px #0002;pointer-events:auto; }
       #hiplin-chat-feed header { display:flex;align-items:center;justify-content:space-between;gap:8px; }
+      #hiplin-chat-feed header strong { flex:1; }
       #hiplin-chat-feed button { min-height:44px;border:0;border-radius:4px;background:transparent;color:#71371f;font:14px system-ui;cursor:pointer;touch-action:manipulation; }
-      #hiplin-chat-feed-log { max-height:min(110px,20vh);overflow:auto;overscroll-behavior:contain;font:13px/1.5 system-ui;overflow-wrap:anywhere;white-space:pre-wrap; }
+      #hiplin-chat-feed header button { min-width:44px;font-size:12px;color:#6d5e4d; }
+      #hiplin-chat-feed-log { max-height:min(74px,14vh);overflow:auto;overscroll-behavior:contain;font:13px/1.5 system-ui;overflow-wrap:anywhere;white-space:pre-wrap; }
       #hiplin-chat-feed-log > div { padding:3px 0;border-top:1px solid #bdab8c66; }
       #hiplin-chat-feed-empty { margin:0;font:12px/1.5 system-ui;color:#6d5e4d; }
-      #hiplin-chat-compose { width:100%;text-align:left; }
-      @media (max-width:600px) { body:has(#hiplin-graphics-test) #hiplin-chat-feed, body:has(#hiplin-graphics-test) #hiplin-chat-launcher { top:calc(116px + env(safe-area-inset-top)); } }
-      @media (max-height:500px) and (min-width:601px) { #hiplin-chat-feed { left:50%;right:auto;transform:translateX(-50%);width:240px; } #hiplin-chat-feed-log { max-height:60px; } }
+      #hiplin-chat-feed #hiplin-chat-compose { width:100%;margin-top:6px;padding:8px 12px;text-align:left;border:1px solid #bdab8c;background:#fff9ed; }
+      @media (max-height:500px) { #hiplin-chat-feed { width:360px; } #hiplin-chat-feed-log { max-height:42px; } }
       #hiplin-chat-overlay { position:fixed;inset:0;box-sizing:border-box;padding:16px max(16px,env(safe-area-inset-right)) 16px max(16px,env(safe-area-inset-left));display:grid;place-items:center;background:#20170faa;pointer-events:auto; }
       #hiplin-chat-panel { width:min(380px,100%);max-height:100%;overflow:auto;box-sizing:border-box;padding:16px;border:1px solid #bdab8c;border-radius:4px;background:#f5ead5 var(--hiplin-paper) center/700px;color:#40362b;box-shadow:0 12px 48px #0006; }
       #hiplin-chat-panel button { min-height:44px;cursor:pointer;touch-action:manipulation; }
@@ -114,8 +115,9 @@
     const feed = doc.createElement('aside'); feed.id = 'hiplin-chat-feed'; feed.setAttribute('aria-label', '新着チャット');
     const feedHeader = doc.createElement('header');
     const feedTitle = doc.createElement('strong'); feedTitle.textContent = '💬 チャット';
+    const expandFeed = doc.createElement('button'); expandFeed.type = 'button'; expandFeed.textContent = '広げる'; expandFeed.setAttribute('aria-label', 'チャットを広げる'); expandFeed.setAttribute('aria-haspopup', 'dialog'); expandFeed.setAttribute('aria-controls', 'hiplin-chat-panel');
     const hideFeed = doc.createElement('button'); hideFeed.type = 'button'; hideFeed.textContent = '隠す'; hideFeed.setAttribute('aria-label', 'チャットを隠す');
-    feedHeader.append(feedTitle, hideFeed);
+    feedHeader.append(feedTitle, expandFeed, hideFeed);
     const feedEmpty = doc.createElement('p'); feedEmpty.id = 'hiplin-chat-feed-empty'; feedEmpty.textContent = '入室すると、ここに会話が表示されます。';
     const feedLog = doc.createElement('div'); feedLog.id = 'hiplin-chat-feed-log'; feedLog.setAttribute('role', 'log'); feedLog.setAttribute('aria-live', 'polite'); feedLog.setAttribute('aria-label', '最近のメッセージ'); feedLog.tabIndex = 0;
     const compose = doc.createElement('button'); compose.id = 'hiplin-chat-compose'; compose.type = 'button'; compose.textContent = '名前を入力して入室'; compose.setAttribute('aria-haspopup', 'dialog'); compose.setAttribute('aria-controls', 'hiplin-chat-panel');
@@ -145,6 +147,37 @@
     let expanded = false, outdoors = false, feedHidden = false, unreadCount = 0, selfId;
     try { feedHidden = global.localStorage.getItem('hiplin-chat-hidden') === 'true'; } catch (_) {}
     root.hidden = true;
+    // Reserve the existing Unity emote row below the primary chat surface.
+    // Mirror VillageEmoteDock.Layout and the movement/jump safe-area anchors.
+    function layoutChat() {
+      const canvas = doc.getElementById('unity-canvas');
+      const rect = canvas?.getBoundingClientRect();
+      const width = rect?.width || doc.documentElement.clientWidth;
+      const height = rect?.height || doc.documentElement.clientHeight;
+      const safe = global.getComputedStyle(root);
+      const bottom = parseFloat(safe.paddingBottom) || 0;
+      const left = parseFloat(safe.paddingLeft) || 0, right = parseFloat(safe.paddingRight) || 0;
+      const top = parseFloat(safe.paddingTop) || 0;
+      const safeWidth = width - left - right, safeHeight = height - top - bottom;
+      let dockBottom = 12;
+      const touch = global.matchMedia('(any-pointer: coarse)').matches || width <= 600;
+      if (touch) {
+        const radius = Math.min(safeWidth * .18, safeHeight * .19);
+        const dockWidth = Math.min(372, Math.max(0, safeWidth - 20));
+        const dockLeft = (safeWidth - dockWidth) / 2;
+        const jumpRadius = Math.min(48, Math.max(28, radius * .58));
+        if (dockLeft < radius * 2.4 || dockLeft < 20 + jumpRadius * 2)
+          dockBottom = Math.max(radius * 2.4, 24 + jumpRadius * 2) + 12;
+      }
+      const canvasBottom = rect ? Math.max(0, doc.documentElement.clientHeight - rect.bottom) : 0;
+      root.style.setProperty('--hiplin-chat-bottom', (canvasBottom + bottom + dockBottom + 80) + 'px');
+      root.style.setProperty('--hiplin-chat-center', ((rect?.left || 0) + left + safeWidth / 2) + 'px');
+    }
+    root.style.padding = 'env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)';
+    feed.style.left = launcher.style.left = 'var(--hiplin-chat-center,50%)';
+    global.addEventListener('resize', layoutChat);
+    if (global.ResizeObserver) new global.ResizeObserver(layoutChat).observe(doc.getElementById('unity-canvas') || doc.documentElement);
+    layoutChat();
     const blocked = () => !outdoors || doc.documentElement.hasAttribute('data-hiplin-sphere-clean-view') || doc.documentElement.hasAttribute('data-hiplin-arcade');
     const focus = value => { if (callback) callback(JSON.stringify({ type: 'chat-focus', focused: value })); };
     function syncFeed() {
@@ -175,7 +208,7 @@
       focus(false); doc.getElementById('unity-canvas')?.focus();
     }
     launcher.addEventListener('click', () => setFeedHidden(false)); hideFeed.addEventListener('click', () => setFeedHidden(true));
-    compose.addEventListener('click', expand); close.addEventListener('click', collapse);
+    compose.addEventListener('click', expand); expandFeed.addEventListener('click', expand); close.addEventListener('click', collapse);
     overlay.addEventListener('click', event => { if (event.target === overlay) collapse(); });
     // Pause Unity for the whole dialog, not just while the input has focus.
     // Buttons and the modal backdrop must not leak keys/touches to game controls.
@@ -215,7 +248,7 @@
       if (!displayName) {
         if (!text || [...text].length > 20 || /[\u0000-\u001f\u007f-\u009f\u202a-\u202e\u2066-\u2069]/.test(text)) { note.textContent = '名前は1〜20文字で入力してください。'; return; }
         displayName = text; heading.textContent = 'ロビーチャット · ' + displayName;
-        compose.textContent = 'メッセージを書く・履歴を見る'; feedEmpty.textContent = 'まだメッセージはありません。';
+        compose.textContent = 'メッセージを書く…'; feedEmpty.textContent = 'まだメッセージはありません。';
         note.textContent = 'Enterで入力・送信 / Escで閉じる · 履歴はページを閉じるまで';
         input.value = ''; input.maxLength = 400; input.placeholder = 'メッセージ（200文字まで）'; input.setAttribute('aria-label', 'メッセージ'); button.textContent = '送信';
         global.HiplinMultiplayer.start(callback); collapse();
