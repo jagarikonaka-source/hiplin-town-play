@@ -1,5 +1,5 @@
 {
-  "builtAtUtc": "2026-09-12T09:56:36.2440440Z",
+  "builtAtUtc": "2026-09-12T10:38:28.6551490Z",
   "mode": "unity-look",
   "textureCompression": "ASTC 6x6",
   "shadowResolution": 2048,
@@ -13,7 +13,8 @@
   "normalUnchanged": true,
   "features": [
     "emote-dock",
-    "emote-wheel",
-    "emotes-v1"
+    "eight-emote-wheel",
+    "emotes-v1",
+    "free-emotes-v1"
   ]
 }
