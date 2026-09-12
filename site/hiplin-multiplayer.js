@@ -89,9 +89,9 @@
     style.textContent = `
       #hiplin-chat-overlay[hidden], #hiplin-chat-launcher[hidden], #hiplin-chat-unread[hidden], #hiplin-chat-feed[hidden] { display:none!important; }
       [aria-label="ロビーチャット"][hidden] { display:none!important; }
-      #hiplin-chat-launcher { position:fixed;left:50%;bottom:var(--hiplin-chat-bottom,92px);transform:translateX(-50%);min-height:44px;padding:8px 14px;border:1px solid #bdab8c;box-sizing:border-box;border-radius:6px;background:#f5ead5 var(--hiplin-paper) center/700px;color:#40362b;box-shadow:0 2px 4px #0003;cursor:pointer;pointer-events:auto;touch-action:manipulation;font:14px system-ui;white-space:nowrap; }
+      #hiplin-chat-launcher { position:fixed;left:50%;bottom:calc(6px + env(safe-area-inset-bottom));transform:translateX(-50%);min-height:44px;padding:8px 14px;border:1px solid #bdab8c;box-sizing:border-box;border-radius:6px;background:#f5ead5 var(--hiplin-paper) center/700px;color:#40362b;box-shadow:0 2px 4px #0003;cursor:pointer;pointer-events:auto;touch-action:manipulation;font:14px system-ui;white-space:nowrap; }
       #hiplin-chat-unread { display:inline-block;margin-left:6px;min-width:20px;padding:2px 4px;box-sizing:border-box;border-radius:12px;background:#a44529;color:#fff;text-shadow:none;font:bold 12px system-ui; }
-      #hiplin-chat-feed { position:fixed;left:50%;bottom:var(--hiplin-chat-bottom,92px);transform:translateX(-50%);width:400px;max-width:calc(100vw - 24px - env(safe-area-inset-left) - env(safe-area-inset-right));box-sizing:border-box;padding:0 10px 8px;border:1px solid #bdab8c;border-radius:6px;background:#f5ead5ed;color:#40362b;box-shadow:0 2px 6px #0002;pointer-events:auto; }
+      #hiplin-chat-feed { position:fixed;left:50%;bottom:calc(6px + env(safe-area-inset-bottom));transform:translateX(-50%);width:400px;max-width:calc(100vw - 24px - env(safe-area-inset-left) - env(safe-area-inset-right));box-sizing:border-box;padding:0 10px 8px;border:1px solid #bdab8c;border-radius:6px;background:#f5ead5ed;color:#40362b;box-shadow:0 2px 6px #0002;pointer-events:auto; }
       #hiplin-chat-feed header { display:flex;align-items:center;justify-content:space-between;gap:8px; }
       #hiplin-chat-feed header strong { flex:1; }
       #hiplin-chat-feed button { min-height:44px;border:0;border-radius:4px;background:transparent;color:#71371f;font:14px system-ui;cursor:pointer;touch-action:manipulation; }
@@ -100,18 +100,18 @@
       #hiplin-chat-feed-log > div { padding:3px 0;border-top:1px solid #bdab8c66; }
       #hiplin-chat-feed-empty { margin:0;font:12px/1.5 system-ui;color:#6d5e4d; }
       #hiplin-chat-feed #hiplin-chat-compose { width:100%;margin-top:6px;padding:8px 12px;text-align:left;border:1px solid #bdab8c;background:#fff9ed; }
-      @media (max-height:500px) { #hiplin-chat-feed { width:360px; } #hiplin-chat-feed-log { max-height:42px; } }
-      @media (max-height:500px) and (orientation:landscape) {
-        #hiplin-chat-feed { display:flex;align-items:center;gap:6px;width:var(--hiplin-chat-compact-width,360px);min-height:46px;padding:0 6px;background:#f5ead5d9; }
+      /* A fixed footer keeps chat outside gameplay at every screen size. */
+      html[data-hiplin-chat-docked] #unity-container { height:calc(100% - 58px - env(safe-area-inset-bottom)) !important; min-height:1px; }
+      [aria-label="ロビーチャット"]::before { content:"";position:fixed;left:0;right:0;bottom:0;height:calc(58px + env(safe-area-inset-bottom));box-sizing:border-box;border-top:1px solid #bdab8c;background:#f5ead5;pointer-events:auto; }
+        #hiplin-chat-feed { display:flex;align-items:center;gap:6px;width:520px;min-height:46px;padding:0 6px;background:#f5ead5d9; }
         #hiplin-chat-feed header { display:contents; }
         #hiplin-chat-feed header strong, #hiplin-chat-feed #hiplin-chat-compose { display:none; }
         #hiplin-chat-feed header button { order:2;flex:0 0 44px;padding:0; }
         #hiplin-chat-feed-log, #hiplin-chat-feed-empty { flex:1;min-width:0;max-height:20px;margin:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis; }
         #hiplin-chat-feed-log:empty, #hiplin-chat-feed-log > div:not(:last-child) { display:none; }
         #hiplin-chat-feed-log > div { padding:0;border:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis; }
-      }
-      #hiplin-chat-overlay { position:fixed;inset:0;box-sizing:border-box;padding:16px max(16px,env(safe-area-inset-right)) 16px max(16px,env(safe-area-inset-left));display:grid;place-items:center;background:#20170faa;pointer-events:auto; }
-      #hiplin-chat-panel { width:min(380px,100%);max-height:100%;overflow:auto;box-sizing:border-box;padding:16px;border:1px solid #bdab8c;border-radius:4px;background:#f5ead5 var(--hiplin-paper) center/700px;color:#40362b;box-shadow:0 12px 48px #0006; }
+      #hiplin-chat-overlay { position:fixed;inset:0;box-sizing:border-box;padding:12px max(12px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left));display:grid;place-items:end center;background:#20170f66;pointer-events:auto; }
+      #hiplin-chat-panel { width:min(520px,100%);max-height:min(420px,100%);overflow:auto;box-sizing:border-box;padding:16px;border:1px solid #bdab8c;border-radius:4px;background:#f5ead5 var(--hiplin-paper) center/700px;color:#40362b;box-shadow:0 12px 48px #0006; }
       #hiplin-chat-panel button { min-height:44px;cursor:pointer;touch-action:manipulation; }
       #hiplin-chat-panel input { box-sizing:border-box;width:100%; }
       #hiplin-chat-launcher:focus-visible, #hiplin-chat-feed :focus-visible, #hiplin-chat-panel :focus-visible { outline:3px solid #a44529;outline-offset:2px; }
@@ -156,56 +156,12 @@
     let expanded = false, outdoors = false, feedHidden = false, unreadCount = 0, selfId;
     try { feedHidden = global.localStorage.getItem('hiplin-chat-hidden') === 'true'; } catch (_) {}
     root.hidden = true;
-    // Reserve the existing Unity emote row below the primary chat surface.
-    // Mirror VillageEmoteDock.Layout and the movement/jump safe-area anchors.
-    function layoutChat() {
-      const canvas = doc.getElementById('unity-canvas');
-      const rect = canvas?.getBoundingClientRect();
-      const width = rect?.width || doc.documentElement.clientWidth;
-      const height = rect?.height || doc.documentElement.clientHeight;
-      const safe = global.getComputedStyle(root);
-      const bottom = parseFloat(safe.paddingBottom) || 0;
-      const left = parseFloat(safe.paddingLeft) || 0, right = parseFloat(safe.paddingRight) || 0;
-      const top = parseFloat(safe.paddingTop) || 0;
-      const safeWidth = width - left - right, safeHeight = height - top - bottom;
-      let dockBottom = 12;
-      let center = (rect?.left || 0) + left + safeWidth / 2;
-      let chatBottom;
-      root.style.removeProperty('--hiplin-chat-compact-width');
-      const touch = global.matchMedia('(any-pointer: coarse)').matches || width <= 600;
-      if (touch) {
-        const radius = Math.min(safeWidth * .18, safeHeight * .19);
-        const dockWidth = Math.min(372, Math.max(0, safeWidth - 20));
-        const dockLeft = (safeWidth - dockWidth) / 2;
-        const jumpRadius = Math.min(48, Math.max(28, radius * .58));
-        if (dockLeft < radius * 2.4 || dockLeft < 20 + jumpRadius * 2)
-          dockBottom = Math.max(radius * 2.4, 24 + jumpRadius * 2) + 12;
-        // On short phones the native emote row rises above the controls.
-        // Put the thin chat strip in the free gap below it instead of stacking upward.
-        if (width > height && height <= 500 && dockBottom > 12) {
-          const gapLeft = radius * 2.4 + 12;
-          const gapRight = safeWidth - 20 - jumpRadius * 2 - 12;
-          if (gapRight - gapLeft >= 220) {
-            center = (rect?.left || 0) + left + (gapLeft + gapRight) / 2;
-            chatBottom = 12;
-            root.style.setProperty('--hiplin-chat-compact-width', Math.min(360, gapRight - gapLeft) + 'px');
-          }
-        }
-      }
-      const canvasBottom = rect ? Math.max(0, doc.documentElement.clientHeight - rect.bottom) : 0;
-      root.style.setProperty('--hiplin-chat-bottom', (canvasBottom + bottom + (chatBottom ?? dockBottom + 80)) + 'px');
-      root.style.setProperty('--hiplin-chat-center', center + 'px');
-    }
-    root.style.padding = 'env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)';
-    feed.style.left = launcher.style.left = 'var(--hiplin-chat-center,50%)';
-    global.addEventListener('resize', layoutChat);
-    if (global.ResizeObserver) new global.ResizeObserver(layoutChat).observe(doc.getElementById('unity-canvas') || doc.documentElement);
-    layoutChat();
     const blocked = () => !outdoors || doc.documentElement.hasAttribute('data-hiplin-sphere-clean-view') || doc.documentElement.hasAttribute('data-hiplin-arcade');
     const focus = value => { if (callback) callback(JSON.stringify({ type: 'chat-focus', focused: value })); };
     function syncFeed() {
       const wasVisible = !root.hidden && !feed.hidden;
       root.hidden = blocked();
+      doc.documentElement.toggleAttribute('data-hiplin-chat-docked', !root.hidden);
       feed.hidden = expanded || feedHidden;
       launcher.hidden = expanded || !feedHidden;
       if (!blocked() && !doc.hidden && (expanded || !feedHidden)) unreadCount = 0;
