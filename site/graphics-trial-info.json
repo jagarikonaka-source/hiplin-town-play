@@ -1,5 +1,5 @@
 {
-  "builtAtUtc": "2026-09-12T10:38:28.6551490Z",
+  "builtAtUtc": "2026-09-12T13:06:44.2834140Z",
   "mode": "unity-look",
   "textureCompression": "ASTC 6x6",
   "shadowResolution": 2048,
@@ -15,6 +15,17 @@
     "emote-dock",
     "eight-emote-wheel",
     "emotes-v1",
-    "free-emotes-v1"
+    "free-emotes-v1",
+    "avatar-profile-v10",
+    "floating-stick",
+    "player-collision",
+    "cardboard-completion",
+    "double-entrance-doors",
+    "furniture",
+    "record-listening",
+    "photo-save",
+    "instrument-session",
+    "maze-jump-gates",
+    "arrival-creator-handoff"
   ]
 }

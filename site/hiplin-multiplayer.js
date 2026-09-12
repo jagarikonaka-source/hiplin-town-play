@@ -26,7 +26,8 @@
       socket.onopen = () => {
         if (socket !== current || stopped) return;
         appearanceKey = JSON.stringify(latest.appearance);
-        socket.send(JSON.stringify({ type: 'hello', protocol: 1, name: options.name, room: roomFor(location), state: latest.state, appearance: latest.appearance }));
+        socket.send(JSON.stringify({ type: 'hello', protocol: 1, appearanceVersion: latest.appearance.schemaVersion >= 10 ? 10 : 9,
+          name: options.name, room: roomFor(location), state: latest.state, appearance: latest.appearance }));
       };
       socket.onmessage = event => {
         if (socket !== current || stopped) return;
