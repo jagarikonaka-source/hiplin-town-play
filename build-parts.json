@@ -1,8 +1,8 @@
 [
   {
     "path": "Build/HiplinTownWebGL.data.unityweb",
-    "size": 250192083,
-    "sha256": "e25af9e453c09d80687381a0cdd5aafabbaae12512781bdff732735ab84926a4",
+    "size": 250669777,
+    "sha256": "90e26c80d4a0fbf6c94e56b766d64e4ea048a1d7e8e7829f101b65b3305541ec",
     "parts": [
       "291f53d58466e883.000.part",
       "291f53d58466e883.001.part",
@@ -13,8 +13,8 @@
   },
   {
     "path": "Build/Mobile/HiplinTownWebGL.data.unityweb",
-    "size": 111217250,
-    "sha256": "17afe330e89d5c54310df19145978fcf2c067d33429094fadec567a78bbc746a",
+    "size": 111694204,
+    "sha256": "453390f1c0282b3704d3db72faa793da5c35441b55b7b55a13e68cc6f1bbe168",
     "parts": [
       "b88ff71d50653628.000.part",
       "b88ff71d50653628.001.part",
