@@ -1,8 +1,8 @@
 {
-    "builtAtUtc": "2026-09-11T23:37:31.0940000Z",
+    "builtAtUtc": "2026-09-12T00:09:39.0088860Z",
     "unityVersion": "6000.6.0f1",
     "scene": "Assets/HIPLIN_TOWN/Scenes/OutdoorLobby.unity",
     "result": "Succeeded",
-    "totalBytes": 380172699,
+    "totalBytes": 380616569,
     "compression": "Gzip with JavaScript decompression fallback"
 }
