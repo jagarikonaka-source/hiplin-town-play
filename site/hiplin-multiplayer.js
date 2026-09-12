@@ -87,21 +87,39 @@
     root.style.cssText = 'position:fixed;inset:0;z-index:20;pointer-events:none;font:14px system-ui,sans-serif;--hiplin-paper:url("paper-ui.png");text-shadow:0 1px 0 #fff8';
     const style = doc.createElement('style');
     style.textContent = `
-      #hiplin-chat-overlay[hidden], #hiplin-chat-launcher[hidden], #hiplin-chat-unread[hidden] { display:none!important; }
+      #hiplin-chat-overlay[hidden], #hiplin-chat-launcher[hidden], #hiplin-chat-unread[hidden], #hiplin-chat-feed[hidden] { display:none!important; }
       [aria-label="ロビーチャット"][hidden] { display:none!important; }
-      #hiplin-chat-launcher { position:fixed;right:calc(12px + env(safe-area-inset-right));top:calc(12px + env(safe-area-inset-top));width:44px;height:44px;padding:4px;border:4px solid transparent;box-sizing:border-box;border-radius:4px;background:#f5ead5 var(--hiplin-paper) center/700px;color:#40362b;box-shadow:inset 1px 1px 3px #6d553133,0 2px 4px #0003;cursor:pointer;pointer-events:auto;touch-action:manipulation;font:20px system-ui;line-height:26px; }
-      #hiplin-chat-unread { position:absolute;right:0;top:0;width:7px;height:7px;border-radius:50%;background:#a44529;border:2px solid #f7efde; }
+      #hiplin-chat-launcher { position:fixed;right:calc(12px + env(safe-area-inset-right));top:calc(64px + env(safe-area-inset-top));min-height:44px;padding:8px 10px;border:1px solid #bdab8c;box-sizing:border-box;border-radius:4px;background:#f5ead5 var(--hiplin-paper) center/700px;color:#40362b;box-shadow:0 2px 4px #0003;cursor:pointer;pointer-events:auto;touch-action:manipulation;font:14px system-ui; }
+      #hiplin-chat-unread { display:inline-block;margin-left:6px;min-width:20px;padding:2px 4px;box-sizing:border-box;border-radius:12px;background:#a44529;color:#fff;text-shadow:none;font:bold 12px system-ui; }
+      #hiplin-chat-feed { position:fixed;right:calc(12px + env(safe-area-inset-right));top:calc(64px + env(safe-area-inset-top));width:270px;max-width:calc(100vw - 24px - env(safe-area-inset-left) - env(safe-area-inset-right));box-sizing:border-box;padding:0 10px 6px;border:1px solid #bdab8c;border-radius:4px;background:#f5ead5ed;color:#40362b;box-shadow:0 2px 6px #0002;pointer-events:auto; }
+      #hiplin-chat-feed header { display:flex;align-items:center;justify-content:space-between;gap:8px; }
+      #hiplin-chat-feed button { min-height:44px;border:0;border-radius:4px;background:transparent;color:#71371f;font:14px system-ui;cursor:pointer;touch-action:manipulation; }
+      #hiplin-chat-feed-log { max-height:min(110px,20vh);overflow:auto;overscroll-behavior:contain;font:13px/1.5 system-ui;overflow-wrap:anywhere;white-space:pre-wrap; }
+      #hiplin-chat-feed-log > div { padding:3px 0;border-top:1px solid #bdab8c66; }
+      #hiplin-chat-feed-empty { margin:0;font:12px/1.5 system-ui;color:#6d5e4d; }
+      #hiplin-chat-compose { width:100%;text-align:left; }
+      @media (max-width:600px) { body:has(#hiplin-graphics-test) #hiplin-chat-feed, body:has(#hiplin-graphics-test) #hiplin-chat-launcher { top:calc(116px + env(safe-area-inset-top)); } }
+      @media (max-height:500px) and (min-width:601px) { #hiplin-chat-feed { left:50%;right:auto;transform:translateX(-50%);width:240px; } #hiplin-chat-feed-log { max-height:60px; } }
       #hiplin-chat-overlay { position:fixed;inset:0;box-sizing:border-box;padding:16px max(16px,env(safe-area-inset-right)) 16px max(16px,env(safe-area-inset-left));display:grid;place-items:center;background:#20170faa;pointer-events:auto; }
       #hiplin-chat-panel { width:min(380px,100%);max-height:100%;overflow:auto;box-sizing:border-box;padding:16px;border:1px solid #bdab8c;border-radius:4px;background:#f5ead5 var(--hiplin-paper) center/700px;color:#40362b;box-shadow:0 12px 48px #0006; }
       #hiplin-chat-panel button { min-height:44px;cursor:pointer;touch-action:manipulation; }
       #hiplin-chat-panel input { box-sizing:border-box;width:100%; }
-      #hiplin-chat-launcher:focus-visible, #hiplin-chat-panel :focus-visible { outline:3px solid #a44529;outline-offset:2px; }
+      #hiplin-chat-launcher:focus-visible, #hiplin-chat-feed :focus-visible, #hiplin-chat-panel :focus-visible { outline:3px solid #a44529;outline-offset:2px; }
     `;
     doc.head.append(style);
     const launcher = doc.createElement('button'); launcher.id = 'hiplin-chat-launcher'; launcher.type = 'button';
-    launcher.textContent = '💬'; launcher.title = 'チャットを開く'; launcher.setAttribute('aria-label', 'チャットを開く');
-    launcher.setAttribute('aria-expanded', 'false'); launcher.setAttribute('aria-controls', 'hiplin-chat-panel');
+    launcher.textContent = '💬 チャットを表示'; launcher.title = 'チャットを表示'; launcher.setAttribute('aria-label', 'チャットを表示');
+    launcher.setAttribute('aria-expanded', 'false'); launcher.setAttribute('aria-controls', 'hiplin-chat-feed');
     const unread = doc.createElement('span'); unread.id = 'hiplin-chat-unread'; unread.hidden = true; unread.setAttribute('aria-hidden', 'true'); launcher.append(unread);
+    const feed = doc.createElement('aside'); feed.id = 'hiplin-chat-feed'; feed.setAttribute('aria-label', '新着チャット');
+    const feedHeader = doc.createElement('header');
+    const feedTitle = doc.createElement('strong'); feedTitle.textContent = '💬 チャット';
+    const hideFeed = doc.createElement('button'); hideFeed.type = 'button'; hideFeed.textContent = '隠す'; hideFeed.setAttribute('aria-label', 'チャットを隠す');
+    feedHeader.append(feedTitle, hideFeed);
+    const feedEmpty = doc.createElement('p'); feedEmpty.id = 'hiplin-chat-feed-empty'; feedEmpty.textContent = '入室すると、ここに会話が表示されます。';
+    const feedLog = doc.createElement('div'); feedLog.id = 'hiplin-chat-feed-log'; feedLog.setAttribute('role', 'log'); feedLog.setAttribute('aria-live', 'polite'); feedLog.setAttribute('aria-label', '最近のメッセージ'); feedLog.tabIndex = 0;
+    const compose = doc.createElement('button'); compose.id = 'hiplin-chat-compose'; compose.type = 'button'; compose.textContent = '名前を入力して入室'; compose.setAttribute('aria-haspopup', 'dialog'); compose.setAttribute('aria-controls', 'hiplin-chat-panel');
+    feed.append(feedHeader, feedEmpty, feedLog, compose);
     const overlay = doc.createElement('div'); overlay.id = 'hiplin-chat-overlay'; overlay.hidden = true;
     const panel = doc.createElement('div'); panel.id = 'hiplin-chat-panel'; panel.setAttribute('role', 'dialog');
     panel.setAttribute('aria-modal', 'true'); panel.setAttribute('aria-labelledby', 'hiplin-chat-heading');
@@ -123,23 +141,41 @@
     input.style.cssText = 'min-width:0;flex:1;padding:9px;border:1px solid #bdab8c;border-radius:3px;background:#faf2e1;color:#40362b;font:16px system-ui;box-shadow:inset 1px 1px 3px #6d553126';
     const button = doc.createElement('button'); button.type = 'submit'; button.textContent = '入室';
     button.style.cssText = 'padding:8px;border:0;border-radius:6px;background:#e8d8b9 var(--hiplin-paper) center/700px;color:#71371f;box-shadow:inset 1px 1px 3px #6d553133';
-    form.append(input, button); panel.append(header, note, status, log, form); overlay.append(panel); root.append(launcher, overlay); doc.body.append(root);
-    let expanded = false, outdoors = false;
+    form.append(input, button); panel.append(header, note, status, log, form); overlay.append(panel); root.append(launcher, feed, overlay); doc.body.append(root);
+    let expanded = false, outdoors = false, feedHidden = false, unreadCount = 0, selfId;
+    try { feedHidden = global.localStorage.getItem('hiplin-chat-hidden') === 'true'; } catch (_) {}
     root.hidden = true;
     const blocked = () => !outdoors || doc.documentElement.hasAttribute('data-hiplin-sphere-clean-view') || doc.documentElement.hasAttribute('data-hiplin-arcade');
     const focus = value => { if (callback) callback(JSON.stringify({ type: 'chat-focus', focused: value })); };
+    function syncFeed() {
+      const wasVisible = !root.hidden && !feed.hidden;
+      root.hidden = blocked();
+      feed.hidden = expanded || feedHidden;
+      launcher.hidden = expanded || !feedHidden;
+      if (!blocked() && !doc.hidden && (expanded || !feedHidden)) unreadCount = 0;
+      unread.hidden = unreadCount === 0;
+      unread.textContent = unreadCount > 99 ? '99+' : String(unreadCount);
+      launcher.setAttribute('aria-expanded', String(!feedHidden));
+      launcher.setAttribute('aria-label', 'チャットを表示' + (unreadCount ? '（新着' + unreadCount + '件）' : ''));
+      if (!root.hidden && !feed.hidden && !wasVisible) feedLog.scrollTop = feedLog.scrollHeight;
+    }
+    function setFeedHidden(value) {
+      feedHidden = value;
+      try { global.localStorage.setItem('hiplin-chat-hidden', String(value)); } catch (_) {}
+      syncFeed(); doc.getElementById('unity-canvas')?.focus();
+    }
     function expand() {
       if (blocked() || expanded) return;
-      expanded = true; overlay.hidden = false; launcher.hidden = true; unread.hidden = true;
-      launcher.setAttribute('aria-expanded', 'true'); launcher.setAttribute('aria-label', 'チャットを開く');
+      expanded = true; overlay.hidden = false; syncFeed();
       focus(true); input.focus(); log.scrollTop = log.scrollHeight;
     }
     function collapse() {
       if (!expanded) return;
-      expanded = false; input.blur(); overlay.hidden = true; launcher.hidden = false;
-      launcher.setAttribute('aria-expanded', 'false'); focus(false); doc.getElementById('unity-canvas')?.focus();
+      expanded = false; input.blur(); overlay.hidden = true; syncFeed();
+      focus(false); doc.getElementById('unity-canvas')?.focus();
     }
-    launcher.addEventListener('click', expand); close.addEventListener('click', collapse);
+    launcher.addEventListener('click', () => setFeedHidden(false)); hideFeed.addEventListener('click', () => setFeedHidden(true));
+    compose.addEventListener('click', expand); close.addEventListener('click', collapse);
     overlay.addEventListener('click', event => { if (event.target === overlay) collapse(); });
     // Pause Unity for the whole dialog, not just while the input has focus.
     // Buttons and the modal backdrop must not leak keys/touches to game controls.
@@ -151,7 +187,8 @@
         else if (!event.shiftKey && doc.activeElement === button) { event.preventDefault(); close.focus(); }
       }
     });
-    new MutationObserver(() => { if (blocked()) collapse(); }).observe(doc.documentElement, { attributes: true, attributeFilter: ['data-hiplin-sphere-clean-view', 'data-hiplin-arcade'] });
+    new MutationObserver(() => { if (blocked()) collapse(); syncFeed(); }).observe(doc.documentElement, { attributes: true, attributeFilter: ['data-hiplin-sphere-clean-view', 'data-hiplin-arcade'] });
+    doc.addEventListener('visibilitychange', syncFeed);
     // iPhone's keyboard changes the visual viewport without resizing the game canvas.
     function fitViewport() {
       const viewport = global.visualViewport;
@@ -178,6 +215,7 @@
       if (!displayName) {
         if (!text || [...text].length > 20 || /[\u0000-\u001f\u007f-\u009f\u202a-\u202e\u2066-\u2069]/.test(text)) { note.textContent = '名前は1〜20文字で入力してください。'; return; }
         displayName = text; heading.textContent = 'ロビーチャット · ' + displayName;
+        compose.textContent = 'メッセージを書く・履歴を見る'; feedEmpty.textContent = 'まだメッセージはありません。';
         note.textContent = 'Enterで入力・送信 / Escで閉じる · 履歴はページを閉じるまで';
         input.value = ''; input.maxLength = 400; input.placeholder = 'メッセージ（200文字まで）'; input.setAttribute('aria-label', 'メッセージ'); button.textContent = '送信';
         global.HiplinMultiplayer.start(callback); collapse();
@@ -190,11 +228,17 @@
     chatUI = { setOutdoor(value) {
       outdoors = value === true;
       if (!outdoors) collapse();
-      root.hidden = !outdoors;
+      syncFeed();
     }, receive(data) {
+      if (data.type === 'welcome') selfId = data.id;
       if (data.type === 'chat') {
         line(data.name + '：' + data.text);
-        if (!expanded) { unread.hidden = false; launcher.setAttribute('aria-label', 'チャットを開く（新着メッセージあり）'); }
+        const row = doc.createElement('div'); row.textContent = data.name + '：' + data.text; feedLog.append(row);
+        while (feedLog.children.length > 4) feedLog.firstChild.remove();
+        feedEmpty.hidden = true;
+        if (data.senderId !== selfId && (doc.hidden || blocked() || (!expanded && feedHidden))) unreadCount++;
+        syncFeed();
+        feedLog.scrollTop = feedLog.scrollHeight;
       }
       if (data.type === 'chat-error') line(data.reason === 'rate-limit' ? '少し待ってから送信してください（10秒に5件まで）。' : 'メッセージを送信できませんでした。');
     } };
