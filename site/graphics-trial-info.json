@@ -1,5 +1,5 @@
 {
-  "builtAtUtc": "2026-09-13T01:42:53.5221530Z",
+  "builtAtUtc": "2026-09-13T02:19:02.1623820Z",
   "mode": "unity-look",
   "textureCompression": "ASTC 6x6",
   "shadowResolution": 2048,
@@ -31,7 +31,8 @@
     "crouch-ledge-traversal-v1",
     "man-bucket-hat-v1",
     "quiet-hud-v1",
-    "blur-in-settings-v1"
+    "blur-in-settings-v1",
+    "emote-right-v1"
   ],
   "characters": [
     {
