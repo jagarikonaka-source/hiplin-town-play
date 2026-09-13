@@ -1,5 +1,5 @@
 {
-  "builtAtUtc": "2026-09-13T03:14:16.1732400Z",
+  "builtAtUtc": "2026-09-13T05:23:32.2231280Z",
   "mode": "unity-look",
   "textureCompression": "ASTC 6x6",
   "shadowResolution": 2048,
@@ -33,7 +33,8 @@
     "quiet-hud-v1",
     "blur-in-settings-v1",
     "emote-right-v1",
-    "bucket-hat-selection-v1"
+    "bucket-hat-selection-v1",
+    "shared-action-ab-v1"
   ],
   "characters": [
     {
