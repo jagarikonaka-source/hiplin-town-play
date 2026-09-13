@@ -1,5 +1,5 @@
 {
-  "builtAtUtc": "2026-09-13T10:37:36.4647190Z",
+  "builtAtUtc": "2026-09-13T13:35:34.4845190Z",
   "mode": "unity-look",
   "textureCompression": "ASTC 6x6",
   "shadowResolution": 2048,
@@ -42,7 +42,14 @@
     "translucent-action-ab-v1",
     "playable-controls-tutorial-v1",
     "character-style-v1",
-    "animation-footsteps-v1"
+    "animation-footsteps-v1",
+    "expanded-practice-tutorial-v2",
+    "resident-conversations-v1",
+    "first-conversation-climb-achievements-v1",
+    "interior-camera-choice-v1",
+    "permanent-shop-ten-items-v1",
+    "indoor-shop-guides-v1",
+    "owned-personal-bgm-v1"
   ],
   "characters": [
     {
