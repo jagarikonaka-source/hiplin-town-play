@@ -1,5 +1,5 @@
 {
-  "builtAtUtc": "2026-09-13T06:37:24.0071930Z",
+  "builtAtUtc": "2026-09-13T07:05:48.5565600Z",
   "mode": "unity-look",
   "textureCompression": "ASTC 6x6",
   "shadowResolution": 2048,
@@ -36,7 +36,9 @@
     "bucket-hat-selection-v1",
     "shared-action-ab-v1",
     "contextual-action-a-v1",
-    "no-fps-hud-v1"
+    "no-fps-hud-v1",
+    "cardboard-exterior-v006",
+    "exterior-time-weather-v1"
   ],
   "characters": [
     {
