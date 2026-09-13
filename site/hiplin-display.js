@@ -4,7 +4,6 @@
   const doc = global.document;
   let ready = false, root, launcher, viewButton, notice, noticeText, noticeTimer;
   let cameraToggle = null, firstPerson = false, cameraAvailable = false;
-  let blurButton, blurToggle = null, blurEnabled = true, blurAvailable = false;
   const fullscreen = () => doc.fullscreenElement || doc.webkitFullscreenElement;
   const standalone = () => global.navigator.standalone === true || global.matchMedia?.('(display-mode: standalone)').matches;
   const blocked = () => doc.documentElement.hasAttribute('data-hiplin-sphere-clean-view') || doc.documentElement.hasAttribute('data-hiplin-arcade');
@@ -12,13 +11,6 @@
     if (!root) return;
     root.hidden = !ready || blocked();
     if (root.hidden) hideNotice();
-    if (blurButton) {
-      blurButton.disabled = !blurToggle || !blurAvailable;
-      blurButton.textContent = blurEnabled ? 'ぼけあり' : 'ぼけなし';
-      blurButton.setAttribute('aria-pressed', String(blurEnabled));
-      blurButton.setAttribute('aria-label', blurEnabled ? '背景ぼけをオフにして比較' : '採用した背景ぼけをオンにして比較');
-      blurButton.title = '同じ場所で切り替え・弱 0.3';
-    }
     const active = !!fullscreen();
     launcher.setAttribute('aria-pressed', String(active));
     launcher.setAttribute('aria-label', active ? '全画面表示を終了' : '全画面表示');
@@ -78,9 +70,6 @@
       #hiplin-display { position:fixed;inset:0;z-index:19;pointer-events:none;font:14px system-ui,sans-serif; }
       #hiplin-display-tools { position:fixed;right:calc(58px + env(safe-area-inset-right));top:calc(12px + env(safe-area-inset-top));display:flex;flex-direction:row-reverse;gap:4px; }
       .hiplin-display-tool { width:44px;height:44px;padding:4px;border:0;background:transparent;color:#fff;cursor:pointer;pointer-events:auto;touch-action:manipulation; }
-      #hiplin-background-focus { width:76px;font:700 12px system-ui,sans-serif;border:1px solid #91b9a880;border-radius:18px;background:#142825a8;height:36px;margin:4px 0; }
-      #hiplin-background-focus[aria-pressed="true"] { border-color:#e9d49b;background:#385c54e8; }
-      #hiplin-background-focus:disabled { opacity:.45; }
       #hiplin-fullscreen svg { display:block;width:36px;height:36px;box-sizing:border-box;padding:8px;border:1px solid #91b9a880;border-radius:50%;background:#142825a8; }
       #hiplin-fullscreen .contract, #hiplin-fullscreen[data-active="true"] .expand { display:none; }
       #hiplin-fullscreen[data-active="true"] .contract { display:block; }
@@ -110,17 +99,11 @@
       // Pointer users return straight to movement; keyboard users retain the control.
       if (event.detail > 0) doc.getElementById('unity-canvas')?.focus();
     });
-    blurButton = doc.createElement('button'); blurButton.id = 'hiplin-background-focus'; blurButton.type = 'button';
-    blurButton.className = 'hiplin-display-tool';
-    blurButton.addEventListener('click', event => {
-      if (blurToggle && blurAvailable) blurToggle();
-      if (event.detail > 0) doc.getElementById('unity-canvas')?.focus();
-    });
     notice = doc.createElement('div'); notice.id = 'hiplin-fullscreen-notice'; notice.hidden = true;
     noticeText = doc.createElement('p'); noticeText.setAttribute('role', 'status'); noticeText.setAttribute('aria-live', 'polite');
     const close = doc.createElement('button'); close.type = 'button'; close.textContent = '×'; close.setAttribute('aria-label', '全画面の案内を閉じる');
     close.addEventListener('click', () => { hideNotice(); launcher.focus(); });
-    notice.append(noticeText, close); toolbar.append(launcher, viewButton, blurButton); root.append(toolbar, notice); doc.body.append(root);
+    notice.append(noticeText, close); toolbar.append(launcher, viewButton); root.append(toolbar, notice); doc.body.append(root);
     launcher.addEventListener('click', toggle);
     // Do not let a UI press start a movement/camera gesture in Unity.
     for (const type of ['pointerdown', 'pointerup', 'touchstart', 'touchend', 'click', 'keydown', 'keyup']) root.addEventListener(type, event => event.stopPropagation());
@@ -136,8 +119,9 @@
   }
   global.HiplinDisplay = {
     ready() { ready = true; if (doc.body) install(); },
-    setBlurToggle(callback) { blurToggle = typeof callback === 'function' ? callback : null; sync(); },
-    blurState(enabled, available) { blurEnabled = !!enabled; blurAvailable = !!available; sync(); },
+    // Kept for existing Unity bridge callers; blur is controlled inside Settings.
+    setBlurToggle(callback) {},
+    blurState(enabled, available) {},
     setCameraToggle(callback) { cameraToggle = typeof callback === 'function' ? callback : null; sync(); },
     cameraState(first, available) { firstPerson = !!first; cameraAvailable = !!available; sync(); }
   };

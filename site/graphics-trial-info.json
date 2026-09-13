@@ -1,5 +1,5 @@
 {
-  "builtAtUtc": "2026-09-13T00:54:47.8719660Z",
+  "builtAtUtc": "2026-09-13T01:42:53.5221530Z",
   "mode": "unity-look",
   "textureCompression": "ASTC 6x6",
   "shadowResolution": 2048,
@@ -29,7 +29,9 @@
     "character-roster-v2",
     "hiplin-man-woman",
     "crouch-ledge-traversal-v1",
-    "man-bucket-hat-v1"
+    "man-bucket-hat-v1",
+    "quiet-hud-v1",
+    "blur-in-settings-v1"
   ],
   "characters": [
     {

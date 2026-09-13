@@ -85,32 +85,25 @@
     if (chatUI) return;
     const doc = global.document;
     const root = doc.createElement('section'); root.setAttribute('aria-label', 'ロビーチャット');
-    root.style.cssText = 'position:fixed;inset:0;z-index:20;pointer-events:none;font:14px system-ui,sans-serif;--hiplin-paper:url("paper-ui.png");text-shadow:0 1px 0 #fff8';
+    root.style.cssText = 'position:fixed;inset:0;z-index:20;pointer-events:none;font:14px system-ui,sans-serif;--hiplin-paper:url("paper-ui.png");text-shadow:none';
     const style = doc.createElement('style');
     style.textContent = `
       #hiplin-chat-overlay[hidden], #hiplin-chat-launcher[hidden], #hiplin-chat-unread[hidden], #hiplin-chat-feed[hidden] { display:none!important; }
       [aria-label="ロビーチャット"][hidden] { display:none!important; }
-      #hiplin-chat-launcher { position:fixed;left:50%;bottom:calc(6px + env(safe-area-inset-bottom));transform:translateX(-50%);min-height:44px;padding:8px 14px;border:1px solid #bdab8c;box-sizing:border-box;border-radius:6px;background:#f5ead5 var(--hiplin-paper) center/700px;color:#40362b;box-shadow:0 2px 4px #0003;cursor:pointer;pointer-events:auto;touch-action:manipulation;font:14px system-ui;white-space:nowrap; }
-      #hiplin-chat-unread { display:inline-block;margin-left:6px;min-width:20px;padding:2px 4px;box-sizing:border-box;border-radius:12px;background:#a44529;color:#fff;text-shadow:none;font:bold 12px system-ui; }
-      #hiplin-chat-feed { position:fixed;left:50%;bottom:calc(6px + env(safe-area-inset-bottom));transform:translateX(-50%);width:400px;max-width:calc(100vw - 24px - env(safe-area-inset-left) - env(safe-area-inset-right));box-sizing:border-box;padding:0 10px 8px;border:1px solid #bdab8c;border-radius:6px;background:#f5ead5ed;color:#40362b;box-shadow:0 2px 6px #0002;pointer-events:auto; }
-      #hiplin-chat-feed header { display:flex;align-items:center;justify-content:space-between;gap:8px; }
-      #hiplin-chat-feed header strong { flex:1; }
-      #hiplin-chat-feed button { min-height:44px;border:0;border-radius:4px;background:transparent;color:#71371f;font:14px system-ui;cursor:pointer;touch-action:manipulation; }
-      #hiplin-chat-feed header button { min-width:44px;font-size:12px;color:#6d5e4d; }
-      #hiplin-chat-feed-log { max-height:min(74px,14vh);overflow:auto;overscroll-behavior:contain;font:13px/1.5 system-ui;overflow-wrap:anywhere;white-space:pre-wrap; }
-      #hiplin-chat-feed-log > div { padding:3px 0;border-top:1px solid #bdab8c66; }
-      #hiplin-chat-feed-empty { margin:0;font:12px/1.5 system-ui;color:#6d5e4d; }
-      #hiplin-chat-feed #hiplin-chat-compose { width:100%;margin-top:6px;padding:8px 12px;text-align:left;border:1px solid #bdab8c;background:#fff9ed; }
-      /* A fixed footer keeps chat outside gameplay at every screen size. */
-      html[data-hiplin-chat-docked] #unity-container { height:calc(100% - 58px - env(safe-area-inset-bottom)) !important; min-height:1px; }
-      [aria-label="ロビーチャット"]::before { content:"";position:fixed;left:0;right:0;bottom:0;height:calc(58px + env(safe-area-inset-bottom));box-sizing:border-box;border-top:1px solid #bdab8c;background:#f5ead5;pointer-events:auto; }
-        #hiplin-chat-feed { display:flex;align-items:center;gap:6px;width:520px;min-height:46px;padding:0 6px;background:#f5ead5d9; }
-        #hiplin-chat-feed header { display:contents; }
-        #hiplin-chat-feed header strong, #hiplin-chat-feed #hiplin-chat-compose { display:none; }
-        #hiplin-chat-feed header button { order:2;flex:0 0 44px;padding:0; }
-        #hiplin-chat-feed-log, #hiplin-chat-feed-empty { flex:1;min-width:0;max-height:20px;margin:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis; }
-        #hiplin-chat-feed-log:empty, #hiplin-chat-feed-log > div:not(:last-child) { display:none; }
-        #hiplin-chat-feed-log > div { padding:0;border:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis; }
+      #hiplin-chat-launcher { position:fixed;left:50%;bottom:env(safe-area-inset-bottom);transform:translateX(-50%);min-height:44px;min-width:44px;padding:0 10px;border:0;box-sizing:border-box;border-radius:6px;background:transparent;color:#c4c9c2;cursor:pointer;pointer-events:auto;touch-action:manipulation;font:12px system-ui;white-space:nowrap; }
+      #hiplin-chat-unread { display:inline-block;margin-left:5px;min-width:16px;padding:1px 4px;box-sizing:border-box;border-radius:9px;background:#67746a;color:#fff;text-shadow:none;font:11px system-ui; }
+      /* Keep the quiet strip outside the game, without the old full-width paper panel. */
+      html[data-hiplin-chat-docked] #unity-container { height:calc(100% - 44px - env(safe-area-inset-bottom)) !important; min-height:1px; }
+      [aria-label="ロビーチャット"]::before { content:"";position:fixed;left:0;right:0;bottom:0;height:calc(44px + env(safe-area-inset-bottom));background:#18211e;pointer-events:auto; }
+      #hiplin-chat-feed { position:fixed;left:50%;bottom:env(safe-area-inset-bottom);transform:translateX(-50%);display:flex;align-items:center;gap:4px;width:max-content;max-width:calc(100vw - 24px - env(safe-area-inset-left) - env(safe-area-inset-right));min-height:44px;box-sizing:border-box;padding:0 4px;border:0;background:transparent;color:#c4c9c2;pointer-events:auto; }
+      #hiplin-chat-feed[data-has-messages] { width:360px; }
+      #hiplin-chat-feed header { display:contents; }
+      #hiplin-chat-feed header strong, #hiplin-chat-feed-empty, #hiplin-chat-feed #hiplin-chat-compose { display:none; }
+      #hiplin-chat-feed button { min-width:44px;min-height:44px;padding:0 6px;border:0;border-radius:4px;background:transparent;color:#b3bcb4;font:12px system-ui;cursor:pointer;touch-action:manipulation; }
+      #hiplin-chat-feed header button { order:2;flex:0 0 auto; }
+      #hiplin-chat-feed-log { flex:1;min-width:0;max-height:20px;margin:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font:12px/20px system-ui; }
+      #hiplin-chat-feed-log:empty, #hiplin-chat-feed-log > div:not(:last-child) { display:none; }
+      #hiplin-chat-feed-log > div { padding:0;border:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis; }
       #hiplin-chat-overlay { position:fixed;inset:0;box-sizing:border-box;padding:12px max(12px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left));display:grid;place-items:end center;background:#20170f66;pointer-events:auto; }
       #hiplin-chat-panel { width:min(520px,100%);max-height:min(420px,100%);overflow:auto;box-sizing:border-box;padding:16px;border:1px solid #bdab8c;border-radius:4px;background:#f5ead5 var(--hiplin-paper) center/700px;color:#40362b;box-shadow:0 12px 48px #0006; }
       #hiplin-chat-panel button { min-height:44px;cursor:pointer;touch-action:manipulation; }
@@ -119,14 +112,14 @@
     `;
     doc.head.append(style);
     const launcher = doc.createElement('button'); launcher.id = 'hiplin-chat-launcher'; launcher.type = 'button';
-    launcher.textContent = '💬 チャットを表示'; launcher.title = 'チャットを表示'; launcher.setAttribute('aria-label', 'チャットを表示');
+    launcher.textContent = 'チャット'; launcher.title = 'チャットを表示'; launcher.setAttribute('aria-label', 'チャットを表示');
     launcher.setAttribute('aria-expanded', 'false'); launcher.setAttribute('aria-controls', 'hiplin-chat-feed');
     const unread = doc.createElement('span'); unread.id = 'hiplin-chat-unread'; unread.hidden = true; unread.setAttribute('aria-hidden', 'true'); launcher.append(unread);
     const feed = doc.createElement('aside'); feed.id = 'hiplin-chat-feed'; feed.setAttribute('aria-label', '新着チャット');
     const feedHeader = doc.createElement('header');
     const feedTitle = doc.createElement('strong'); feedTitle.textContent = '💬 チャット';
-    const expandFeed = doc.createElement('button'); expandFeed.type = 'button'; expandFeed.textContent = '広げる'; expandFeed.setAttribute('aria-label', 'チャットを広げる'); expandFeed.setAttribute('aria-haspopup', 'dialog'); expandFeed.setAttribute('aria-controls', 'hiplin-chat-panel');
-    const hideFeed = doc.createElement('button'); hideFeed.type = 'button'; hideFeed.textContent = '隠す'; hideFeed.setAttribute('aria-label', 'チャットを隠す');
+    const expandFeed = doc.createElement('button'); expandFeed.type = 'button'; expandFeed.textContent = 'チャット'; expandFeed.setAttribute('aria-label', 'チャットを広げる'); expandFeed.setAttribute('aria-haspopup', 'dialog'); expandFeed.setAttribute('aria-controls', 'hiplin-chat-panel');
+    const hideFeed = doc.createElement('button'); hideFeed.type = 'button'; hideFeed.textContent = '−'; hideFeed.title = 'チャットを隠す'; hideFeed.setAttribute('aria-label', 'チャットを隠す');
     feedHeader.append(feedTitle, expandFeed, hideFeed);
     const feedEmpty = doc.createElement('p'); feedEmpty.id = 'hiplin-chat-feed-empty'; feedEmpty.textContent = '入室すると、ここに会話が表示されます。';
     const feedLog = doc.createElement('div'); feedLog.id = 'hiplin-chat-feed-log'; feedLog.setAttribute('role', 'log'); feedLog.setAttribute('aria-live', 'polite'); feedLog.setAttribute('aria-label', '最近のメッセージ'); feedLog.tabIndex = 0;
@@ -164,6 +157,7 @@
       root.hidden = blocked();
       doc.documentElement.toggleAttribute('data-hiplin-chat-docked', !root.hidden);
       feed.hidden = expanded || feedHidden;
+      feed.toggleAttribute('data-has-messages', feedLog.children.length > 0);
       launcher.hidden = expanded || !feedHidden;
       if (!blocked() && !doc.hidden && (expanded || !feedHidden)) unreadCount = 0;
       unread.hidden = unreadCount === 0;
