@@ -1,5 +1,5 @@
 {
-  "builtAtUtc": "2026-09-13T07:45:50.7702700Z",
+  "builtAtUtc": "2026-09-13T08:54:28.4224490Z",
   "mode": "unity-look",
   "textureCompression": "ASTC 6x6",
   "shadowResolution": 2048,
@@ -39,7 +39,8 @@
     "no-fps-hud-v1",
     "cardboard-exterior-v006",
     "exterior-time-weather-v1",
-    "translucent-action-ab-v1"
+    "translucent-action-ab-v1",
+    "playable-controls-tutorial-v1"
   ],
   "characters": [
     {
