@@ -1,5 +1,5 @@
 {
-  "builtAtUtc": "2026-09-13T10:01:14.2864120Z",
+  "builtAtUtc": "2026-09-13T10:37:36.4647190Z",
   "mode": "unity-look",
   "textureCompression": "ASTC 6x6",
   "shadowResolution": 2048,
@@ -41,7 +41,8 @@
     "exterior-time-weather-v1",
     "translucent-action-ab-v1",
     "playable-controls-tutorial-v1",
-    "character-style-v1"
+    "character-style-v1",
+    "animation-footsteps-v1"
   ],
   "characters": [
     {
