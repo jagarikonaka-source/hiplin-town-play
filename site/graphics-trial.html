@@ -176,10 +176,10 @@
 
       // HIPLIN device build selection begin
       var mobileBuild = {
-        loaderUrl: "Build/UnityTrial/HiplinTownWebGL.loader.js?v=1fa55e0430f6f2e210ca8b564f1d8979b971dce4eb50aba743bc556b0c1df948",
-        dataUrl: "Build/UnityTrial/HiplinTownWebGL.data.unityweb?v=46f73c28b63b66e72a1275823e58cfc4952ed8fe473b03f7928d565a6ec0d025",
+        loaderUrl: "Build/UnityTrial/HiplinTownWebGL.loader.js?v=c38ae48177099ceabdb56d9c4111cb15aad651f961f60bf0e58ad37265d59613",
+        dataUrl: "Build/UnityTrial/HiplinTownWebGL.data.unityweb?v=feb4c7ded69c6353bfd721f483f130d011eaa99ba103b01c59a0604eabc71fab",
         frameworkUrl: "Build/UnityTrial/HiplinTownWebGL.framework.js.unityweb?v=bee8295776344ff2b4594129da2bf264e223ab9b71dcd431b717e2a0aa215b52",
-        codeUrl: "Build/UnityTrial/HiplinTownWebGL.wasm.unityweb?v=6fe842d4729c2f3f922f6c6add2301b6344207b17e45408eb5df1afa700828a2"
+        codeUrl: "Build/UnityTrial/HiplinTownWebGL.wasm.unityweb?v=6e0bf101ed0f891977b5b59dcc371bb1355dcad95bf3e3613f2900c47cacfba6"
       };
       var deviceBuild = window.HiplinDeviceBuild.select();
       if (deviceBuild === "astc") {
@@ -194,9 +194,9 @@
       var restoreStartupDownloads = function () {};
       if (deviceBuild === "astc") {
         restoreStartupDownloads = window.HiplinStartupDownloads.install(config, {
-          "Build/UnityTrial/HiplinTownWebGL.data.unityweb?v=46f73c28b63b66e72a1275823e58cfc4952ed8fe473b03f7928d565a6ec0d025": 147004744,
+          "Build/UnityTrial/HiplinTownWebGL.data.unityweb?v=feb4c7ded69c6353bfd721f483f130d011eaa99ba103b01c59a0604eabc71fab": 147012940,
           "Build/UnityTrial/HiplinTownWebGL.framework.js.unityweb?v=bee8295776344ff2b4594129da2bf264e223ab9b71dcd431b717e2a0aa215b52": 363031,
-          "Build/UnityTrial/HiplinTownWebGL.wasm.unityweb?v=6fe842d4729c2f3f922f6c6add2301b6344207b17e45408eb5df1afa700828a2": 39159911
+          "Build/UnityTrial/HiplinTownWebGL.wasm.unityweb?v=6e0bf101ed0f891977b5b59dcc371bb1355dcad95bf3e3613f2900c47cacfba6": 39216638
         });
       }
       // HIPLIN streamed startup end
