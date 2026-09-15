@@ -76,6 +76,7 @@
       el('hiplin-loading-status').textContent = '読み込めませんでした。通信状況を確認してください。';
       const retry = el('hiplin-loading-retry'); retry.hidden = false;
       retry.addEventListener('click', () => global.location.reload(), { once:true });
+      retry.focus();
     }
   };
 })(window);
