@@ -160,8 +160,8 @@
     const button = doc.createElement('button'); button.type = 'submit'; button.textContent = '入室';
     button.style.cssText = 'padding:8px;border:0;border-radius:4px;font:13px system-ui;';
     form.append(input, button); feed.append(form); panel.append(header, note, status, log); overlay.append(panel); root.append(launcher, feed, overlay); doc.body.append(root);
-    let expanded = false, outdoors = false, feedHidden = false, unreadCount = 0, selfId, focused = false, composing = false;
-    try { feedHidden = global.localStorage.getItem('hiplin-chat-hidden') === 'true'; } catch (_) {}
+    let expanded = false, outdoors = false, feedHidden = true, unreadCount = 0, selfId, focused = false, composing = false;
+    try { feedHidden = global.localStorage.getItem('hiplin-chat-hidden') !== 'false'; } catch (_) {}
     root.hidden = true;
     const blocked = () => !outdoors || doc.documentElement.hasAttribute('data-hiplin-sphere-clean-view') || doc.documentElement.hasAttribute('data-hiplin-arcade');
     const focus = value => { if (focused === value) return; focused = value; if (callback) callback(JSON.stringify({ type: 'chat-focus', focused: value })); };

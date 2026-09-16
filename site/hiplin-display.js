@@ -4,6 +4,9 @@
   const doc = global.document;
   let ready = false, root, launcher, viewButton, notice, noticeText, noticeTimer;
   let cameraToggle = null, firstPerson = false, cameraAvailable = false;
+  let resumeFullscreen = false, fullscreenWanted = true, explainedHomeScreen = false;
+  const mobileApple = () => /iPhone|iPad|iPod/i.test(global.navigator.userAgent) || (global.navigator.platform === 'MacIntel' && global.navigator.maxTouchPoints > 1);
+  try { fullscreenWanted = global.localStorage.getItem('hiplin-fullscreen-wanted') !== 'false'; } catch (_) {}
   const fullscreen = () => doc.fullscreenElement || doc.webkitFullscreenElement;
   const standalone = () => global.navigator.standalone === true || global.matchMedia?.('(display-mode: standalone)').matches;
   const blocked = () => doc.documentElement.hasAttribute('data-hiplin-sphere-clean-view') || doc.documentElement.hasAttribute('data-hiplin-arcade');
@@ -11,10 +14,10 @@
     if (!root) return;
     root.hidden = !ready || blocked();
     if (root.hidden) hideNotice();
-    const active = !!fullscreen();
+    const active = !!fullscreen() || !!standalone();
     launcher.setAttribute('aria-pressed', String(active));
-    launcher.setAttribute('aria-label', active ? '全画面表示を終了' : '全画面表示');
-    launcher.title = active ? '全画面表示を終了' : '全画面表示';
+    launcher.setAttribute('aria-label', standalone() ? 'ホーム画面アプリで表示中' : active ? '全画面表示を終了' : '全画面表示');
+    launcher.title = standalone() ? 'ホーム画面アプリで表示中' : active ? '全画面表示を終了' : '全画面表示';
     launcher.dataset.active = String(active);
     if (viewButton) {
       const next = firstPerson ? '三人称' : '一人称';
@@ -45,13 +48,18 @@
   }
   function toggle() {
     hideNotice();
+    if (standalone()) { fallback(); return; }
     try {
       let result;
       if (fullscreen()) {
+        fullscreenWanted = false; resumeFullscreen = false;
+        try { global.localStorage.setItem('hiplin-fullscreen-wanted', 'false'); } catch (_) {}
         const exit = doc.exitFullscreen || doc.webkitExitFullscreen;
         if (!exit) { fallback(); return; }
         result = exit.call(doc);
       } else {
+        fullscreenWanted = true;
+        try { global.localStorage.setItem('hiplin-fullscreen-wanted', 'true'); } catch (_) {}
         const page = doc.documentElement;
         const request = page.requestFullscreen || page.webkitRequestFullscreen;
         const enabled = page.requestFullscreen ? doc.fullscreenEnabled !== false : doc.webkitFullscreenEnabled !== false;
@@ -61,6 +69,17 @@
       }
       Promise.resolve(result).then(sync).catch(fallback);
     } catch (_) { fallback(); }
+  }
+  function prepareResume() {
+    if (!ready || !mobileApple() || standalone() || !fullscreenWanted) return;
+    const page = doc.documentElement;
+    const supported = (page.requestFullscreen && doc.fullscreenEnabled !== false) || (page.webkitRequestFullscreen && doc.webkitFullscreenEnabled !== false);
+    resumeFullscreen = !!supported && !fullscreen();
+    if (!supported && !explainedHomeScreen && !blocked()) {
+      explainedHomeScreen = true;
+      showNotice('iPhoneで毎回広い画面で遊ぶには、Safariの共有 →「ホーム画面に追加」。「Webアプリとして開く」をオンにし、追加したアイコンから起動してください。');
+    }
+    sync();
   }
   function install() {
     if (root) { sync(); return; }
@@ -110,6 +129,15 @@
     root.addEventListener('keydown', event => { if (event.key === 'Escape' && !notice.hidden) { hideNotice(); launcher.focus(); } });
     doc.addEventListener('fullscreenchange', sync);
     doc.addEventListener('webkitfullscreenchange', sync);
+    // A restored Safari tab cannot silently request fullscreen. Retry once on
+    // the next real canvas gesture only, never while typing or using another UI.
+    doc.addEventListener('pointerdown', event => {
+      if (resumeFullscreen && ready && !blocked() && event.isTrusted && event.target === doc.getElementById('unity-canvas')) {
+        resumeFullscreen = false; toggle();
+      }
+    }, true);
+    doc.addEventListener('visibilitychange', () => { if (!doc.hidden) prepareResume(); });
+    global.addEventListener('pageshow', prepareResume);
     // Ignore another element's (for example a video player's) fullscreen errors.
     const failed = event => { if (event.target === doc.documentElement && !root.hidden) fallback(); };
     doc.addEventListener('fullscreenerror', failed);
@@ -118,7 +146,7 @@
     sync();
   }
   global.HiplinDisplay = {
-    ready() { ready = true; if (doc.body) install(); },
+    ready() { ready = true; if (doc.body) { install(); prepareResume(); } },
     // Kept for existing Unity bridge callers; blur is controlled inside Settings.
     setBlurToggle(callback) {},
     blurState(enabled, available) {},
