@@ -90,25 +90,39 @@
     style.textContent = `
       #hiplin-chat-overlay[hidden], #hiplin-chat-launcher[hidden], #hiplin-chat-unread[hidden], #hiplin-chat-feed[hidden] { display:none!important; }
       [aria-label="ロビーチャット"][hidden] { display:none!important; }
-      #hiplin-chat-launcher { position:fixed;left:50%;bottom:env(safe-area-inset-bottom);transform:translateX(-50%);min-height:44px;min-width:44px;padding:0 10px;border:0;box-sizing:border-box;border-radius:6px;background:transparent;color:#c4c9c2;cursor:pointer;pointer-events:auto;touch-action:manipulation;font:12px system-ui;white-space:nowrap; }
+      #hiplin-chat-launcher { position:fixed;left:max(12px,env(safe-area-inset-left));top:calc(68px + env(safe-area-inset-top));min-height:44px;min-width:44px;padding:0 12px;border:1px solid #c9d2cc55;box-sizing:border-box;border-radius:6px;background:#17211ee6;color:#f3f5ee;cursor:pointer;pointer-events:auto;touch-action:manipulation;font:13px system-ui;white-space:nowrap; }
       #hiplin-chat-unread { display:inline-block;margin-left:5px;min-width:16px;padding:1px 4px;box-sizing:border-box;border-radius:9px;background:#67746a;color:#fff;text-shadow:none;font:11px system-ui; }
-      /* Keep the quiet strip outside the game, without the old full-width paper panel. */
-      html[data-hiplin-chat-docked] #unity-container { height:calc(100% - 44px - env(safe-area-inset-bottom)) !important; min-height:1px; }
-      [aria-label="ロビーチャット"]::before { content:"";position:fixed;left:0;right:0;bottom:0;height:calc(44px + env(safe-area-inset-bottom));background:#18211e;pointer-events:auto; }
-      #hiplin-chat-feed { position:fixed;left:50%;bottom:env(safe-area-inset-bottom);transform:translateX(-50%);display:flex;align-items:center;gap:4px;width:max-content;max-width:calc(100vw - 24px - env(safe-area-inset-left) - env(safe-area-inset-right));min-height:44px;box-sizing:border-box;padding:0 4px;border:0;background:transparent;color:#c4c9c2;pointer-events:auto; }
-      #hiplin-chat-feed[data-has-messages] { width:360px; }
-      #hiplin-chat-feed header { display:contents; }
-      #hiplin-chat-feed header strong, #hiplin-chat-feed-empty, #hiplin-chat-feed #hiplin-chat-compose { display:none; }
-      #hiplin-chat-feed button { min-width:44px;min-height:44px;padding:0 6px;border:0;border-radius:4px;background:transparent;color:#b3bcb4;font:12px system-ui;cursor:pointer;touch-action:manipulation; }
-      #hiplin-chat-feed header button { order:2;flex:0 0 auto; }
-      #hiplin-chat-feed-log { flex:1;min-width:0;max-height:20px;margin:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font:12px/20px system-ui; }
-      #hiplin-chat-feed-log:empty, #hiplin-chat-feed-log > div:not(:last-child) { display:none; }
-      #hiplin-chat-feed-log > div { padding:0;border:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis; }
+      /* Overlay only the visible panel: no full-width footer or invisible hit surface. */
+      #hiplin-chat-feed { position:fixed;left:max(12px,env(safe-area-inset-left));top:calc(68px + env(safe-area-inset-top));display:flex;flex-direction:column;width:360px;max-width:calc(100vw - 24px - env(safe-area-inset-left) - env(safe-area-inset-right));height:238px;max-height:calc(100dvh - 84px);box-sizing:border-box;border:1px solid #c9d2cc55;border-radius:6px;background:#111b18d9;color:#f3f5ee;pointer-events:auto;box-shadow:0 3px 14px #0003;color-scheme:dark; }
+      #hiplin-chat-feed header { display:flex;align-items:center;gap:2px;min-height:44px;padding:0 6px 0 12px;border-bottom:1px solid #c9d2cc2e; }
+      #hiplin-chat-feed header strong { flex:1;min-width:0;font-size:13px;overflow-wrap:anywhere; }
+      #hiplin-chat-feed-empty { margin:0;padding:10px 12px;color:#d8e0da;font-size:13px;line-height:1.5; }
+      #hiplin-chat-feed-empty[hidden] { display:none; }
+      #hiplin-chat-feed button { min-width:44px;min-height:44px;padding:0 8px;border:0;border-radius:4px;background:transparent;color:#f3f5ee;font:13px system-ui;cursor:pointer;touch-action:manipulation; }
+      #hiplin-chat-feed button:hover, #hiplin-chat-launcher:hover { background:#34473ff5; }
+      #hiplin-chat-feed button:active { background:#4b6056; }
+      #hiplin-chat-feed-log { flex:1;min-height:0;min-width:0;padding:4px 12px;overflow:auto;overscroll-behavior:contain;touch-action:pan-y;white-space:pre-wrap;overflow-wrap:anywhere;font:13px/1.55 system-ui;scrollbar-width:thin; }
+      #hiplin-chat-feed-log > div { padding:2px 0;content-visibility:auto;contain-intrinsic-size:auto 24px; }
+      #hiplin-chat-feed form { flex-shrink:0;padding:6px;gap:6px;border-top:1px solid #c9d2cc2e; }
+      #hiplin-chat-feed input { height:44px;background:#0d1512c9;color:#fff;border-color:#a8b9ae88!important; }
+      #hiplin-chat-feed form button { background:#415c4ef2; }
+      #hiplin-chat-feed input::placeholder { color:#cad4cc;opacity:1; }
+      #hiplin-chat-feed:focus-within { border-color:#ead59b; }
+      @media (pointer:coarse), (max-width:900px) {
+        #hiplin-chat-feed { width:320px;height:210px;max-height:calc(100dvh - 220px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); }
+      }
+      @media (max-height:440px) and (orientation:landscape) {
+        #hiplin-chat-feed { width:300px;height:166px;max-height:calc(100dvh - 180px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); }
+        #hiplin-chat-feed-empty { padding:4px 12px; }
+      }
+      [aria-label="ロビーチャット"][data-editing] #hiplin-chat-feed { top:calc(var(--chat-viewport-top,0px) + 68px + env(safe-area-inset-top));max-height:var(--chat-visible-height,calc(100dvh - 84px)); }
       #hiplin-chat-overlay { position:fixed;inset:0;box-sizing:border-box;padding:12px max(12px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left));display:grid;place-items:end center;background:#20170f66;pointer-events:auto; }
-      #hiplin-chat-panel { width:min(520px,100%);max-height:min(420px,100%);overflow:auto;box-sizing:border-box;padding:16px;border:1px solid #bdab8c;border-radius:4px;background:#f5ead5 var(--hiplin-paper) center/700px;color:#40362b;box-shadow:0 12px 48px #0006; }
+      #hiplin-chat-panel { width:min(520px,100%);max-height:min(420px,100%);overflow:auto;overscroll-behavior:contain;box-sizing:border-box;padding:16px;border:1px solid #bdab8c;border-radius:4px;background:#f5ead5 var(--hiplin-paper) center/700px;color:#40362b;box-shadow:0 12px 48px #0006; }
       #hiplin-chat-panel button { min-height:44px;cursor:pointer;touch-action:manipulation; }
-      #hiplin-chat-panel input { box-sizing:border-box;width:100%; }
-      #hiplin-chat-launcher:focus-visible, #hiplin-chat-feed :focus-visible, #hiplin-chat-panel :focus-visible { outline:3px solid #a44529;outline-offset:2px; }
+      #hiplin-chat-panel input { box-sizing:border-box;width:100%;background:#faf2e1;color:#40362b; }
+      #hiplin-chat-panel form button { background:#e8d8b9;color:#71371f; }
+      #hiplin-chat-launcher:focus-visible, #hiplin-chat-feed :focus-visible { outline:2px solid #ffe398;outline-offset:-2px; }
+      #hiplin-chat-panel :focus-visible { outline:3px solid #a44529;outline-offset:2px; }
     `;
     doc.head.append(style);
     const launcher = doc.createElement('button'); launcher.id = 'hiplin-chat-launcher'; launcher.type = 'button';
@@ -117,14 +131,13 @@
     const unread = doc.createElement('span'); unread.id = 'hiplin-chat-unread'; unread.hidden = true; unread.setAttribute('aria-hidden', 'true'); launcher.append(unread);
     const feed = doc.createElement('aside'); feed.id = 'hiplin-chat-feed'; feed.setAttribute('aria-label', '新着チャット');
     const feedHeader = doc.createElement('header');
-    const feedTitle = doc.createElement('strong'); feedTitle.textContent = '💬 チャット';
-    const expandFeed = doc.createElement('button'); expandFeed.type = 'button'; expandFeed.textContent = 'チャット'; expandFeed.setAttribute('aria-label', 'チャットを広げる'); expandFeed.setAttribute('aria-haspopup', 'dialog'); expandFeed.setAttribute('aria-controls', 'hiplin-chat-panel');
-    const hideFeed = doc.createElement('button'); hideFeed.type = 'button'; hideFeed.textContent = '−'; hideFeed.title = 'チャットを隠す'; hideFeed.setAttribute('aria-label', 'チャットを隠す');
+    const feedTitle = doc.createElement('strong'); feedTitle.id = 'hiplin-chat-title'; feedTitle.textContent = 'チャット';
+    const expandFeed = doc.createElement('button'); expandFeed.type = 'button'; expandFeed.textContent = '拡大'; expandFeed.setAttribute('aria-label', 'チャットを広げる'); expandFeed.setAttribute('aria-haspopup', 'dialog'); expandFeed.setAttribute('aria-controls', 'hiplin-chat-panel');
+    const hideFeed = doc.createElement('button'); hideFeed.type = 'button'; hideFeed.textContent = '隠す'; hideFeed.title = 'チャットを隠す'; hideFeed.setAttribute('aria-label', 'チャットを隠す');
     feedHeader.append(feedTitle, expandFeed, hideFeed);
     const feedEmpty = doc.createElement('p'); feedEmpty.id = 'hiplin-chat-feed-empty'; feedEmpty.textContent = '入室すると、ここに会話が表示されます。';
     const feedLog = doc.createElement('div'); feedLog.id = 'hiplin-chat-feed-log'; feedLog.setAttribute('role', 'log'); feedLog.setAttribute('aria-live', 'polite'); feedLog.setAttribute('aria-label', '最近のメッセージ'); feedLog.tabIndex = 0;
-    const compose = doc.createElement('button'); compose.id = 'hiplin-chat-compose'; compose.type = 'button'; compose.textContent = '名前を入力して入室'; compose.setAttribute('aria-haspopup', 'dialog'); compose.setAttribute('aria-controls', 'hiplin-chat-panel');
-    feed.append(feedHeader, feedEmpty, feedLog, compose);
+    feed.append(feedHeader, feedEmpty, feedLog);
     const overlay = doc.createElement('div'); overlay.id = 'hiplin-chat-overlay'; overlay.hidden = true;
     const panel = doc.createElement('div'); panel.id = 'hiplin-chat-panel'; panel.setAttribute('role', 'dialog');
     panel.setAttribute('aria-modal', 'true'); panel.setAttribute('aria-labelledby', 'hiplin-chat-heading');
@@ -142,20 +155,20 @@
     const log = doc.createElement('div'); log.setAttribute('role', 'log'); log.setAttribute('aria-live', 'polite');
     log.style.cssText = 'max-height:160px;overflow:auto;overflow-wrap:anywhere;white-space:pre-wrap;margin:8px 0';
     const form = doc.createElement('form'); form.style.cssText = 'display:flex;gap:6px';
-    const input = doc.createElement('input'); input.maxLength = 40; input.placeholder = '表示名'; input.setAttribute('aria-label', '表示名');
-    input.style.cssText = 'min-width:0;flex:1;padding:9px;border:1px solid #bdab8c;border-radius:3px;background:#faf2e1;color:#40362b;font:16px system-ui;box-shadow:inset 1px 1px 3px #6d553126';
+    const input = doc.createElement('input'); input.maxLength = 40; input.placeholder = '名前を入力して入室…'; input.setAttribute('aria-label', '表示名'); input.name = 'chat-name'; input.autocomplete = 'off'; input.spellcheck = false;
+    input.style.cssText = 'box-sizing:border-box;min-width:0;flex:1;padding:9px;border:1px solid #bdab8c;border-radius:3px;font:16px system-ui;';
     const button = doc.createElement('button'); button.type = 'submit'; button.textContent = '入室';
-    button.style.cssText = 'padding:8px;border:0;border-radius:6px;background:#e8d8b9 var(--hiplin-paper) center/700px;color:#71371f;box-shadow:inset 1px 1px 3px #6d553133';
-    form.append(input, button); panel.append(header, note, status, log, form); overlay.append(panel); root.append(launcher, feed, overlay); doc.body.append(root);
-    let expanded = false, outdoors = false, feedHidden = false, unreadCount = 0, selfId;
+    button.style.cssText = 'padding:8px;border:0;border-radius:4px;font:13px system-ui;';
+    form.append(input, button); feed.append(form); panel.append(header, note, status, log); overlay.append(panel); root.append(launcher, feed, overlay); doc.body.append(root);
+    let expanded = false, outdoors = false, feedHidden = false, unreadCount = 0, selfId, focused = false, composing = false;
     try { feedHidden = global.localStorage.getItem('hiplin-chat-hidden') === 'true'; } catch (_) {}
     root.hidden = true;
     const blocked = () => !outdoors || doc.documentElement.hasAttribute('data-hiplin-sphere-clean-view') || doc.documentElement.hasAttribute('data-hiplin-arcade');
-    const focus = value => { if (callback) callback(JSON.stringify({ type: 'chat-focus', focused: value })); };
+    const focus = value => { if (focused === value) return; focused = value; if (callback) callback(JSON.stringify({ type: 'chat-focus', focused: value })); };
     function syncFeed() {
       const wasVisible = !root.hidden && !feed.hidden;
       root.hidden = blocked();
-      doc.documentElement.toggleAttribute('data-hiplin-chat-docked', !root.hidden);
+      doc.documentElement.removeAttribute('data-hiplin-chat-docked');
       feed.hidden = expanded || feedHidden;
       feed.toggleAttribute('data-has-messages', feedLog.children.length > 0);
       launcher.hidden = expanded || !feedHidden;
@@ -167,26 +180,33 @@
       if (!root.hidden && !feed.hidden && !wasVisible) feedLog.scrollTop = feedLog.scrollHeight;
     }
     function setFeedHidden(value) {
+      if (root.contains(doc.activeElement)) doc.activeElement.blur();
+      focus(false); root.removeAttribute('data-editing');
       feedHidden = value;
       try { global.localStorage.setItem('hiplin-chat-hidden', String(value)); } catch (_) {}
       syncFeed(); doc.getElementById('unity-canvas')?.focus();
     }
     function expand() {
       if (blocked() || expanded) return;
-      expanded = true; overlay.hidden = false; syncFeed();
+      expanded = true; overlay.hidden = false; panel.append(form); syncFeed();
       focus(true); input.focus(); log.scrollTop = log.scrollHeight;
     }
     function collapse() {
-      if (!expanded) return;
-      expanded = false; input.blur(); overlay.hidden = true; syncFeed();
+      if (!expanded && !focused) return;
+      expanded = false; input.blur(); overlay.hidden = true; feed.append(form); root.removeAttribute('data-editing'); syncFeed();
       focus(false); doc.getElementById('unity-canvas')?.focus();
     }
     launcher.addEventListener('click', () => setFeedHidden(false)); hideFeed.addEventListener('click', () => setFeedHidden(true));
-    compose.addEventListener('click', expand); expandFeed.addEventListener('click', expand); close.addEventListener('click', collapse);
+    expandFeed.addEventListener('click', expand); close.addEventListener('click', collapse);
     overlay.addEventListener('click', event => { if (event.target === overlay) collapse(); });
-    // Pause Unity for the whole dialog, not just while the input has focus.
-    // Buttons and the modal backdrop must not leak keys/touches to game controls.
-    for (const type of ['keydown', 'keyup', 'pointerdown', 'pointerup', 'touchstart', 'touchend', 'click']) root.addEventListener(type, event => event.stopPropagation());
+    // Pause while typing, operating the panel, or in the expanded dialog. Outside
+    // the actual visible elements the root never owns pointer/touch input.
+    root.addEventListener('focusin', () => focus(true));
+    root.addEventListener('focusout', () => queueMicrotask(() => { if (!expanded && !root.contains(doc.activeElement)) { focus(false); root.removeAttribute('data-editing'); } }));
+    root.addEventListener('pointerdown', () => focus(true));
+    doc.addEventListener('pointerdown', event => { if (!expanded && !root.contains(event.target)) { if (root.contains(doc.activeElement)) doc.activeElement.blur(); focus(false); root.removeAttribute('data-editing'); } }, true);
+    for (const type of ['keydown', 'keyup', 'pointerdown', 'pointerup', 'pointermove', 'touchstart', 'touchend', 'touchmove', 'wheel', 'click']) root.addEventListener(type, event => event.stopPropagation());
+    root.addEventListener('keydown', event => { if (!expanded && event.key === 'Escape' && !event.isComposing && !composing) { event.preventDefault(); collapse(); } });
     overlay.addEventListener('keydown', event => {
       if (event.key === 'Escape' && !event.isComposing) { event.preventDefault(); collapse(); }
       if (event.key === 'Tab') {
@@ -202,29 +222,42 @@
       if (viewport) {
         overlay.style.top = viewport.offsetTop + 'px'; overlay.style.height = viewport.height + 'px'; overlay.style.bottom = 'auto';
         if (expanded && doc.activeElement === input) input.scrollIntoView({ block: 'nearest' });
+        root.style.setProperty('--chat-viewport-top', viewport.offsetTop + 'px');
+        root.style.setProperty('--chat-visible-height', Math.max(100, viewport.height - 84) + 'px');
       }
     }
     global.visualViewport?.addEventListener('resize', fitViewport);
     global.visualViewport?.addEventListener('scroll', fitViewport); fitViewport();
-    const line = text => { const row = doc.createElement('div'); row.textContent = text; log.append(row); while (log.children.length > 100) log.firstChild.remove(); log.scrollTop = log.scrollHeight; };
+    const line = text => {
+      for (const target of [log, feedLog]) {
+        const follow = target.scrollHeight - target.scrollTop - target.clientHeight < 28;
+        const row = doc.createElement('div'); row.textContent = text; target.append(row);
+        while (target.children.length > 100) target.firstChild.remove();
+        if (follow) target.scrollTop = target.scrollHeight;
+      }
+      feedEmpty.hidden = true;
+    };
+    input.addEventListener('focus', () => { root.setAttribute('data-editing', ''); focus(true); fitViewport(); });
+    input.addEventListener('compositionstart', () => { composing = true; });
+    input.addEventListener('compositionend', () => { composing = false; });
     input.addEventListener('keydown', event => {
-      if (event.isComposing && event.key === 'Enter') event.preventDefault();
+      if ((event.isComposing || composing || event.keyCode === 229) && event.key === 'Enter') event.preventDefault();
     });
     doc.addEventListener('keydown', event => {
       if (blocked() || expanded) return;
       if (event.key === 'Enter' && !event.isComposing && !event.repeat && !event.ctrlKey && !event.metaKey && !event.altKey &&
           (doc.activeElement === doc.body || doc.activeElement === doc.getElementById('unity-canvas'))) {
-        event.preventDefault(); event.stopImmediatePropagation(); expand();
+        event.preventDefault(); event.stopImmediatePropagation(); setFeedHidden(false); input.focus();
       }
     }, true);
     form.addEventListener('submit', event => {
-      event.preventDefault(); const text = input.value.trim();
+      event.preventDefault(); if (composing) return; const text = input.value.trim();
       if (!displayName) {
-        if (!text || [...text].length > 20 || /[\u0000-\u001f\u007f-\u009f\u202a-\u202e\u2066-\u2069]/.test(text)) { note.textContent = '名前は1〜20文字で入力してください。'; return; }
+        if (!text || [...text].length > 20 || /[\u0000-\u001f\u007f-\u009f\u202a-\u202e\u2066-\u2069]/.test(text)) { note.textContent = '名前は1〜20文字で入力してください。'; line(note.textContent); input.focus(); return; }
         displayName = text; heading.textContent = 'ロビーチャット · ' + displayName;
-        compose.textContent = 'メッセージを書く…'; feedEmpty.textContent = 'まだメッセージはありません。';
+        feedEmpty.textContent = 'まだメッセージはありません。';
         note.textContent = 'Enterで入力・送信 / Escで閉じる · 履歴はページを閉じるまで';
-        input.value = ''; input.maxLength = 400; input.placeholder = 'メッセージ（200文字まで）'; input.setAttribute('aria-label', 'メッセージ'); button.textContent = '送信';
+        input.value = ''; input.maxLength = 400; input.placeholder = 'メッセージを入力…'; input.name = 'chat-message'; input.setAttribute('aria-label', 'メッセージ（200文字まで）'); button.textContent = '送信';
         global.HiplinMultiplayer.start(callback); collapse();
       } else {
         if (!text || [...text].length > 200) { line('200文字以内で入力してください。'); return; }
@@ -240,12 +273,8 @@
       if (data.type === 'welcome') selfId = data.id;
       if (data.type === 'chat') {
         line(data.name + '：' + data.text);
-        const row = doc.createElement('div'); row.textContent = data.name + '：' + data.text; feedLog.append(row);
-        while (feedLog.children.length > 4) feedLog.firstChild.remove();
-        feedEmpty.hidden = true;
         if (data.senderId !== selfId && (doc.hidden || blocked() || (!expanded && feedHidden))) unreadCount++;
         syncFeed();
-        feedLog.scrollTop = feedLog.scrollHeight;
       }
       if (data.type === 'chat-error') line(data.reason === 'rate-limit' ? '少し待ってから送信してください（10秒に5件まで）。' : 'メッセージを送信できませんでした。');
     } };
@@ -256,6 +285,8 @@
     const labels = { online: '● オンライン · ' + count + '人', connecting: '○ みんなの街に接続中', offline: '○ ひとりで散策中 · 再接続しています', full: '○ 満員です · 空きを待っています', unconfigured: '○ ひとりで散策中 · 通信設定を確認してください' };
     const text = state === 'unjoined' ? '○ 未入室 · ひとりで散策できます' : labels[state] || labels.offline;
     if (badge.textContent !== text) badge.textContent = text;
+    const title = global.document.getElementById('hiplin-chat-title');
+    if (title) { title.textContent = state === 'online' ? 'チャット · ' + count + '人' : 'チャット'; title.title = text; }
     badge.style.color = state === 'online' ? '#48623c' : '#6d5e4d';
   }
   global.HiplinMultiplayer = {
