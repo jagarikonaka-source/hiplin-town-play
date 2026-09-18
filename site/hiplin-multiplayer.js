@@ -61,6 +61,10 @@
       }, 2000);
     }
     return {
+      arena(command) {
+        if (!joined || socket.readyState !== 1 || socket.bufferedAmount > 32768) return false;
+        socket.send(JSON.stringify({ ...command, type: 'arena-command' })); return true;
+      },
       chat(text) {
         if (!joined || socket.readyState !== 1 || socket.bufferedAmount > 32768) return false;
         socket.send(JSON.stringify({ type: 'chat', text })); return true;
@@ -291,6 +295,10 @@
   }
   global.HiplinMultiplayer = {
     createClient, roomFor,
+    arena(json) {
+      try { return client?.arena(typeof json === 'string' ? JSON.parse(json) : json) || false; }
+      catch (_) { return false; }
+    },
     async start(receiver) {
       this.stop(); const current = ++generation; callback = receiver;
       setupChat();
