@@ -94,8 +94,8 @@
     style.textContent = `
       #hiplin-chat-overlay[hidden], #hiplin-chat-launcher[hidden], #hiplin-chat-unread[hidden], #hiplin-chat-feed[hidden] { display:none!important; }
       [aria-label="ロビーチャット"][hidden] { display:none!important; }
-      #hiplin-chat-launcher { position:fixed;left:max(12px,env(safe-area-inset-left));top:calc(68px + env(safe-area-inset-top));min-height:44px;min-width:44px;padding:0 12px;border:1px solid #c9d2cc55;box-sizing:border-box;border-radius:6px;background:#17211ee6;color:#f3f5ee;cursor:pointer;pointer-events:auto;touch-action:manipulation;font:13px system-ui;white-space:nowrap; }
-      #hiplin-chat-unread { display:inline-block;margin-left:5px;min-width:16px;padding:1px 4px;box-sizing:border-box;border-radius:9px;background:#67746a;color:#fff;text-shadow:none;font:11px system-ui; }
+      #hiplin-chat-launcher { position:fixed;left:calc(64px + env(safe-area-inset-left));top:calc(8px + env(safe-area-inset-top));height:44px;width:80px;padding:0 6px;border:1px solid #c9d2cc55;box-sizing:border-box;border-radius:6px;background:#17211ee6;color:#f3f5ee;cursor:pointer;pointer-events:auto;touch-action:manipulation;font:13px system-ui;white-space:nowrap; }
+      #hiplin-chat-unread { position:absolute;right:-3px;top:-5px;min-width:16px;padding:1px 4px;box-sizing:border-box;border-radius:9px;background:#67746a;color:#fff;text-shadow:none;font:11px system-ui; }
       /* Overlay only the visible panel: no full-width footer or invisible hit surface. */
       #hiplin-chat-feed { position:fixed;left:max(12px,env(safe-area-inset-left));top:calc(68px + env(safe-area-inset-top));display:flex;flex-direction:column;width:360px;max-width:calc(100vw - 24px - env(safe-area-inset-left) - env(safe-area-inset-right));height:238px;max-height:calc(100dvh - 84px);box-sizing:border-box;border:1px solid #c9d2cc55;border-radius:6px;background:#111b18d9;color:#f3f5ee;pointer-events:auto;box-shadow:0 3px 14px #0003;color-scheme:dark; }
       #hiplin-chat-feed header { display:flex;align-items:center;gap:2px;min-height:44px;padding:0 6px 0 12px;border-bottom:1px solid #c9d2cc2e; }
@@ -114,6 +114,10 @@
       #hiplin-chat-feed:focus-within { border-color:#ead59b; }
       @media (pointer:coarse), (max-width:900px) {
         #hiplin-chat-feed { width:320px;height:210px;max-height:calc(100dvh - 220px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); }
+      }
+      @media (orientation:portrait) {
+        /* Leave the same right-hand camera/action rail as TownHudLayout. */
+        #hiplin-chat-feed { width:min(320px,calc(100vw - 140px - env(safe-area-inset-left) - env(safe-area-inset-right))); }
       }
       @media (max-height:440px) and (orientation:landscape) {
         #hiplin-chat-feed { width:300px;height:166px;max-height:calc(100dvh - 180px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); }
@@ -169,6 +173,7 @@
     root.hidden = true;
     const blocked = () => !outdoors || doc.documentElement.hasAttribute('data-hiplin-sphere-clean-view') || doc.documentElement.hasAttribute('data-hiplin-arcade');
     const focus = value => { if (focused === value) return; focused = value; if (callback) callback(JSON.stringify({ type: 'chat-focus', focused: value })); };
+    let publishedPanelVisibility;
     function syncFeed() {
       const wasVisible = !root.hidden && !feed.hidden;
       root.hidden = blocked();
@@ -182,6 +187,12 @@
       launcher.setAttribute('aria-expanded', String(!feedHidden));
       launcher.setAttribute('aria-label', 'チャットを表示' + (unreadCount ? '（新着' + unreadCount + '件）' : ''));
       if (!root.hidden && !feed.hidden && !wasVisible) feedLog.scrollTop = feedLog.scrollHeight;
+      const panelVisible = !root.hidden && (expanded || !feedHidden);
+      // Distinct from focus: reading chat hides competing cards, not movement.
+      if (callback && publishedPanelVisibility !== panelVisible) {
+        publishedPanelVisibility = panelVisible;
+        callback(JSON.stringify({ type: 'chat-panel', visible: panelVisible }));
+      }
     }
     function setFeedHidden(value) {
       if (root.contains(doc.activeElement)) doc.activeElement.blur();
