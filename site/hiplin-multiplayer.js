@@ -102,6 +102,10 @@
       #hiplin-chat-feed header strong { flex:1;min-width:0;font-size:13px;overflow-wrap:anywhere; }
       #hiplin-chat-feed-empty { margin:0;padding:10px 12px;color:#d8e0da;font-size:13px;line-height:1.5; }
       #hiplin-chat-feed-empty[hidden] { display:none; }
+      #hiplin-chat-first-help { margin:0;padding:8px 12px;min-height:26px;flex:0 1 auto;overflow:auto;overscroll-behavior:contain;white-space:pre-line;font:14px/1.5 system-ui;color:#fff0c6; }
+      #hiplin-chat-first-help[hidden] { display:none; }
+      #hiplin-chat-feed[data-first-visit] #hiplin-chat-feed-empty { display:none; }
+      #hiplin-chat-feed[data-first-visit] { height:min(360px,calc(100dvh - 84px - env(safe-area-inset-top) - env(safe-area-inset-bottom)));max-height:calc(100dvh - 84px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); }
       #hiplin-chat-feed button { min-width:44px;min-height:44px;padding:0 8px;border:0;border-radius:4px;background:transparent;color:#f3f5ee;font:13px system-ui;cursor:pointer;touch-action:manipulation; }
       #hiplin-chat-feed button:hover, #hiplin-chat-launcher:hover { background:#34473ff5; }
       #hiplin-chat-feed button:active { background:#4b6056; }
@@ -120,7 +124,7 @@
         #hiplin-chat-feed { width:min(320px,calc(100vw - 140px - env(safe-area-inset-left) - env(safe-area-inset-right))); }
       }
       @media (max-height:440px) and (orientation:landscape) {
-        #hiplin-chat-feed { width:300px;height:166px;max-height:calc(100dvh - 180px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); }
+        #hiplin-chat-feed { width:300px;height:166px;max-height:calc(100dvh - 84px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); }
         #hiplin-chat-feed-empty { padding:4px 12px; }
       }
       [aria-label="ロビーチャット"][data-editing] #hiplin-chat-feed { top:calc(var(--chat-viewport-top,0px) + 68px + env(safe-area-inset-top));max-height:var(--chat-visible-height,calc(100dvh - 84px)); }
@@ -145,7 +149,9 @@
     feedHeader.append(feedTitle, expandFeed, hideFeed);
     const feedEmpty = doc.createElement('p'); feedEmpty.id = 'hiplin-chat-feed-empty'; feedEmpty.textContent = '入室すると、ここに会話が表示されます。';
     const feedLog = doc.createElement('div'); feedLog.id = 'hiplin-chat-feed-log'; feedLog.setAttribute('role', 'log'); feedLog.setAttribute('aria-live', 'polite'); feedLog.setAttribute('aria-label', '最近のメッセージ'); feedLog.tabIndex = 0;
-    feed.append(feedHeader, feedEmpty, feedLog);
+    const firstHelp = doc.createElement('p'); firstHelp.id = 'hiplin-chat-first-help'; firstHelp.hidden = true;
+    firstHelp.textContent = '① ニックネームを書いて「入室」\n② 発言したいときだけ「送信」\n本名や連絡先は書かないでね。\n入室しなくても「隠す」で案内へ戻れるよ。';
+    feed.append(feedHeader, firstHelp, feedEmpty, feedLog);
     const overlay = doc.createElement('div'); overlay.id = 'hiplin-chat-overlay'; overlay.hidden = true;
     const panel = doc.createElement('div'); panel.id = 'hiplin-chat-panel'; panel.setAttribute('role', 'dialog');
     panel.setAttribute('aria-modal', 'true'); panel.setAttribute('aria-labelledby', 'hiplin-chat-heading');
@@ -280,7 +286,9 @@
         input.value = ''; input.focus();
       }
     });
-    chatUI = { setOutdoor(value) {
+    chatUI = { setOutdoor(value, firstVisit) {
+      firstHelp.hidden = firstVisit !== true;
+      feed.toggleAttribute('data-first-visit', firstVisit === true);
       outdoors = value === true;
       if (!outdoors) collapse();
       syncFeed();
@@ -333,7 +341,7 @@
     },
     update(json) {
       pending = json;
-      try { chatUI?.setOutdoor(JSON.parse(json).isOutdoors); } catch (_) { chatUI?.setOutdoor(false); }
+      try { const state = JSON.parse(json); chatUI?.setOutdoor(state.isOutdoors, state.firstVisitChat); } catch (_) { chatUI?.setOutdoor(false); }
       if (client) client.update(json);
     },
     stop() { generation++; clearTimeout(configRetry); if (client) client.stop(); client = null; pending = null; }

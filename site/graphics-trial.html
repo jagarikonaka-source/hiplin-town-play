@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="TemplateData/style.css">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="HIPLIN TOWN">
-    <script src="hiplin-multiplayer.js?v=b57ea80da5f4b38d66cd07c77a7548e280da275f10a072ad2f93d0483e7179cc"></script>
+    <script src="hiplin-multiplayer.js?v=7c3ea898cb2295d89645346d3e420e974328355213a211f96084839d13ab5eff"></script>
     <script src="hiplin-display.js?v=1c764ea9e3499b04546a85f0d124a31878eb4e01a7eddd6a8066dc819ad5da1d"></script>
     <style>
       html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #000; }
@@ -176,10 +176,10 @@
 
       // HIPLIN device build selection begin
       var mobileBuild = {
-        loaderUrl: "Build/UnityTrial/HiplinTownWebGL.loader.js?v=70df8defbedab437ffbd2dc0bc0f1a21f0780c024030933cfae626b09f9d90da",
-        dataUrl: "Build/UnityTrial/HiplinTownWebGL.data.unityweb?v=d4f5cbab94883cf1844feb39d0839b506e4bdb26825bffc5b8c55203392383a8",
+        loaderUrl: "Build/UnityTrial/HiplinTownWebGL.loader.js?v=9aa492daec160f234d025d3bb075cbed3ebad7b5c270a3759f00ddd8aba04b4f",
+        dataUrl: "Build/UnityTrial/HiplinTownWebGL.data.unityweb?v=d30219bbfafb93e0d5a16b513e02d2f3ae6f121ab5a89c7a402958a4bbb0b297",
         frameworkUrl: "Build/UnityTrial/HiplinTownWebGL.framework.js.unityweb?v=3bc8a2d8865227fdfb53510bd4d1d4851cea83393fcab1f3c4a1e3cf9e6a3b86",
-        codeUrl: "Build/UnityTrial/HiplinTownWebGL.wasm.unityweb?v=6304e2c27b03a0d971250bde93a15f8fdbbdb238f6dfd2e959eed68b935d34c8"
+        codeUrl: "Build/UnityTrial/HiplinTownWebGL.wasm.unityweb?v=0ab35f216b741e3d3d47829a08a96386b91970c6ff38af39dd8df4e397c2b7df"
       };
       var deviceBuild = window.HiplinDeviceBuild.select();
       if (deviceBuild === "astc") {
@@ -194,9 +194,9 @@
       var restoreStartupDownloads = function () {};
       if (deviceBuild === "astc") {
         restoreStartupDownloads = window.HiplinStartupDownloads.install(config, {
-          "Build/UnityTrial/HiplinTownWebGL.data.unityweb?v=d4f5cbab94883cf1844feb39d0839b506e4bdb26825bffc5b8c55203392383a8": 226170687,
+          "Build/UnityTrial/HiplinTownWebGL.data.unityweb?v=d30219bbfafb93e0d5a16b513e02d2f3ae6f121ab5a89c7a402958a4bbb0b297": 226191641,
           "Build/UnityTrial/HiplinTownWebGL.framework.js.unityweb?v=3bc8a2d8865227fdfb53510bd4d1d4851cea83393fcab1f3c4a1e3cf9e6a3b86": 363628,
-          "Build/UnityTrial/HiplinTownWebGL.wasm.unityweb?v=6304e2c27b03a0d971250bde93a15f8fdbbdb238f6dfd2e959eed68b935d34c8": 39636481
+          "Build/UnityTrial/HiplinTownWebGL.wasm.unityweb?v=0ab35f216b741e3d3d47829a08a96386b91970c6ff38af39dd8df4e397c2b7df": 39677346
         });
       }
       // HIPLIN streamed startup end
