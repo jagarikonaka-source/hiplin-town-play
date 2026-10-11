@@ -22,7 +22,7 @@
 <link rel="stylesheet" href="hiplin-loading.css?v=cf86b605d5d4eb056e45b54ba178e90bccbc824b99c9168ea4f2d52d1b9549f6">
 <script src="hiplin-loading.js?v=fda8994ff49711a2ef35a90c5d2b002ce3fff22963fc466275d9f67090728d64"></script>
     <script src="hiplin-device-build.js?v=23e865b78697a60300ee9589b6ae1e9a3b283367520e03b30653d59eedf14741"></script>
-    <script src="hiplin-startup-downloads.js?v=0d5ea5a3619d6d831cb79f6c1fd88e989a6612f9a5ce017b68f9b509c97c3d1a"></script>
+    <script src="hiplin-startup-downloads.js?v=c7d1904421f37d4c546615de38a4b47a7d36e59d8d1441d0bd4c04075a726e74"></script>
 <script src="hiplin-graphics-trial.js?v=b88a9252ff6bc1e175ebe667eeb6d506e7bb7cdac635f184302b8e0dfeb37bc4"></script>
 </head>
   <body>
@@ -193,6 +193,7 @@
       // HIPLIN streamed startup begin
       var restoreStartupDownloads = function () {};
       if (deviceBuild === "astc") {
+        config.hiplinStartupManifestUrl = "hiplin-startup-manifest.json?v=" + new URL(config.dataUrl, window.location.href).searchParams.get("v");
         restoreStartupDownloads = window.HiplinStartupDownloads.install(config, {
           "Build/UnityTrial/HiplinTownWebGL.data.unityweb?v=8629939035d61f4cb65e6878cdf4433c6f69bb0fa85b90578655c9c45fe45cfb": 226328994,
           "Build/UnityTrial/HiplinTownWebGL.framework.js.unityweb?v=3bc8a2d8865227fdfb53510bd4d1d4851cea83393fcab1f3c4a1e3cf9e6a3b86": 363628,
